@@ -9,6 +9,7 @@ console
     .AdicionaInjecaoDependencia((services, configuracao) =>
     {
         services.AddASBConsole();
+        services.AddDadosCSV(configuracao);
         services.AddTransient<ControlePrincipal>();
 
         services.AddTransient<IMenuInicial, ListarCadastro>();

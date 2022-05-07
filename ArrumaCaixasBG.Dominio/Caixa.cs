@@ -11,6 +11,6 @@ public class Caixa
 
     public override string ToString()
     {
-        return $"({Altura,4}x{Largura,4}x{Comprimento,4}) {Nome}";
+        return $"({Altura,6} x {Largura,6} x {Comprimento,6}) {Nome}";
     }
 }
