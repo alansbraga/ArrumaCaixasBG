@@ -61,6 +61,24 @@ namespace ArrumaCaixasBG.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Listar Cadastros.
+        /// </summary>
+        internal static string ListarCadastros {
+            get {
+                return ResourceManager.GetString("ListarCadastros", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Organizar Cadastrados.
+        /// </summary>
+        internal static string OrganizarCadastrados {
+            get {
+                return ResourceManager.GetString("OrganizarCadastrados", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Selecione uma opção.
         /// </summary>
         internal static string SelecioneOpcao {

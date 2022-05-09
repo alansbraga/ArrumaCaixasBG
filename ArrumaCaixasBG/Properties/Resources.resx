@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ListarCadastros" xml:space="preserve">
+    <value>Listar Cadastros</value>
+  </data>
+  <data name="OrganizarCadastrados" xml:space="preserve">
+    <value>Organizar Cadastrados</value>
+  </data>
   <data name="SelecioneOpcao" xml:space="preserve">
     <value>Selecione uma opção</value>
   </data>

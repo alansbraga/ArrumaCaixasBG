@@ -1,5 +1,6 @@
 ﻿using ArrumaCaixasBG.DadosCSV;
 using ArrumaCaixasBG.Dominio.Interfaces;
+using ArrumaCaixasBG.Properties;
 using ASB.Console;
 using Microsoft.Extensions.Options;
 
@@ -49,6 +50,6 @@ internal class ListarCadastro : IMenuInicial
 
     public override string ToString()
     {
-        return "Listar Cadastros";
+        return Resources.ListarCadastros;
     }
 }
