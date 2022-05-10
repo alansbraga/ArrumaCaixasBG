@@ -1,5 +1,7 @@
-﻿namespace ArrumaCaixasBG.Dominio;
-public class Prateleira
+﻿using System;
+
+namespace ArrumaCaixasBG.Dominio;
+public class Prateleira : IEquatable<Prateleira>
 {
     private readonly List<Caixa> caixas;
 
@@ -28,4 +30,11 @@ public class Prateleira
         return $"({Altura,6} x {Largura,6} x {Profundidade,6}) {Nome}";
     }
 
+    public bool Equals(Prateleira? other)
+    {
+        if (other is null)
+            return false;
+
+        return Nome == other.Nome;
+    }
 }

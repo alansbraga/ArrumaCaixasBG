@@ -1,17 +1,22 @@
-﻿using ArrumaCaixasBG.Properties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ArrumaCaixasBG.Dominio.Interfaces;
+using ArrumaCaixasBG.Properties;
 
 namespace ArrumaCaixasBG.MenuInicial;
 
 internal class OrganizarCadastrados : IMenuInicial
 {
+    private readonly IOrganizadorCaixas organizador;
+
+    public OrganizarCadastrados(IOrganizadorCaixas organizador)
+    {
+        this.organizador = organizador;
+    }
+
     public void Executar()
     {
-        throw new NotImplementedException();
+        var ret = organizador.Organizar();
+        Console.WriteLine(ret);
+        Console.ReadLine();
     }
 
     public override string ToString()

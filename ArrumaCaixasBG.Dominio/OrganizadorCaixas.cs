@@ -21,23 +21,40 @@ internal class OrganizadorCaixas : IOrganizadorCaixas
 
     public ResultadoOrganizacao Organizar()
     {
-        var caixas = repositorioCaixas.LerTodos();
-        var prateleiras = repositorioPrateleiras.LerTodos();
-        var prateleirasArrumadas = solucoes.SelectMany(s => s.Arrumar(caixas, prateleiras));
-        var agrupadas = prateleirasArrumadas
-            .GroupBy(p => p.Nome);
+        var caixas = repositorioCaixas.LerTodos()
+            .ToList();
+        var prateleiras = repositorioPrateleiras.LerTodos()
+            .ToList();
         var retorno = new List<Prateleira>();
-        foreach (var porPrateleira in agrupadas)
+
+        while (prateleiras.Any() && caixas.Any())
         {
-            var maisOtimizada = porPrateleira
+            var prateleirasArrumadas = new List<Prateleira>();
+            foreach (var prateleira in prateleiras)
+            {
+                prateleirasArrumadas.AddRange(solucoes.SelectMany(s => s.Arrumar(caixas, prateleira)));
+            }
+            var maisOtimizada = prateleirasArrumadas
                 .OrderBy(p => p.VolumeNaoUtilizado)
                 .First();
             retorno.Add(maisOtimizada);
+            prateleiras.Remove(maisOtimizada);
+            RemoverCaixasUsadas(maisOtimizada, caixas);
         }
+
+
         var resultado = new ResultadoOrganizacao(retorno)
         {
             Descricao = $"{DateTime.Now:yyyy-MM-dd hh-mm-ss}"
         };
         return resultado;
+    }
+
+    private static void RemoverCaixasUsadas(Prateleira maisOtimizada, List<Caixa> caixas)
+    {
+        foreach (var caixa in maisOtimizada.Caixas)
+        {
+            caixas.Remove(caixa);
+        }
     }
 }

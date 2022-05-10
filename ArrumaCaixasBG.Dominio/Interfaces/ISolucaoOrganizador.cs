@@ -2,6 +2,6 @@
 
 public interface ISolucaoOrganizador
 {
-    IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, IEnumerable<Prateleira> prateleiras);
+    IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira);
 }
 
