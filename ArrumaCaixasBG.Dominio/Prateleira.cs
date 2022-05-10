@@ -3,7 +3,7 @@
 namespace ArrumaCaixasBG.Dominio;
 public class Prateleira : IEquatable<Prateleira>
 {
-    private readonly List<Caixa> caixas;
+    private readonly List<CaixaArrumada> caixas;
 
     public string Nome { get; set; } = string.Empty;
     public decimal Altura { get; set; }
@@ -13,14 +13,14 @@ public class Prateleira : IEquatable<Prateleira>
 
     public Prateleira()
     {
-        caixas = new List<Caixa>();
+        caixas = new List<CaixaArrumada>();
     }
 
     public decimal Volume => Altura * Largura * Profundidade;
     public decimal VolumeNaoUtilizado => Volume - caixas.Sum(c => c.Volume);
-    public IEnumerable<Caixa> Caixas => caixas.ToArray();
+    public IEnumerable<CaixaArrumada> Caixas => caixas.ToArray();
 
-    public void SubstituiCaixas(IEnumerable<Caixa> novasCaixas)
+    public void SubstituiCaixas(IEnumerable<CaixaArrumada> novasCaixas)
     {
         caixas.Clear();
         caixas.AddRange(novasCaixas);

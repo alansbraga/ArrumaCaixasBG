@@ -6,16 +6,19 @@ namespace ArrumaCaixasBG.MenuInicial;
 internal class OrganizarCadastrados : IMenuInicial
 {
     private readonly IOrganizadorCaixas organizador;
+    private readonly IMostrarResultado mostrarResultado;
 
-    public OrganizarCadastrados(IOrganizadorCaixas organizador)
+    public OrganizarCadastrados(IOrganizadorCaixas organizador, IMostrarResultado mostrarResultado)
     {
         this.organizador = organizador;
+        this.mostrarResultado = mostrarResultado;
     }
 
     public void Executar()
     {
         var ret = organizador.Organizar();
-        Console.WriteLine(ret);
+        mostrarResultado.Mostrar(ret);
+        Console.WriteLine("Fim");
         Console.ReadLine();
     }
 

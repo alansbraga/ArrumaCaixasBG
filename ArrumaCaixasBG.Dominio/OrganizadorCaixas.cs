@@ -43,7 +43,7 @@ internal class OrganizadorCaixas : IOrganizadorCaixas
         }
 
 
-        var resultado = new ResultadoOrganizacao(retorno)
+        var resultado = new ResultadoOrganizacao(retorno, caixas)
         {
             Descricao = $"{DateTime.Now:yyyy-MM-dd hh-mm-ss}"
         };

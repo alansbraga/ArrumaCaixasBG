@@ -21,4 +21,14 @@ public class Caixa : IEquatable<Caixa>
     {
         return $"({Altura,6} x {Largura,6} x {Comprimento,6}) {Nome}";
     }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as Caixa);
+    }
+
+    public override int GetHashCode()
+    {
+        return Nome.GetHashCode();
+    }
 }

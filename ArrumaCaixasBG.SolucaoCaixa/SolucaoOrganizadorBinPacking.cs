@@ -34,13 +34,16 @@ internal class SolucaoOrganizadorBinPacking : ISolucaoOrganizador
                 Profundidade = prateleira.Profundidade
             };
 
-            novaPrateleira.SubstituiCaixas(resultado.Select(c => new Caixa()
+            novaPrateleira.SubstituiCaixas(resultado.Select(c => new CaixaArrumada()
             {
                 Altura = c.Height,
                 Comprimento = c.Depth,
                 Largura = c.Width,
                 Nome = ((Caixa)c.Tag).Nome,
-                Peso = c.Weight
+                Peso = c.Weight,
+                X = c.X,
+                Y = c.Y,
+                Z = c.Z
             }));
             yield return novaPrateleira;
         }

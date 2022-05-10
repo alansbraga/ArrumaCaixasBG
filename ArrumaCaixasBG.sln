@@ -18,7 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodigoExterno", "CodigoExte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp3DBinPacking", "Sharp3DBinPacking\Sharp3DBinPacking\Sharp3DBinPacking.csproj", "{A605B683-4FEC-4788-B47E-2E0580162FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrumaCaixasBG.SolucaoCaixa", "ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj", "{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrumaCaixasBG.SolucaoCaixa", "ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj", "{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrumaCaixasBG.MostrarImagens", "ArrumaCaixasBG.MostrarImagens\ArrumaCaixasBG.MostrarImagens.csproj", "{B9AF1CEB-6101-46AF-A753-FE9D979A2306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
