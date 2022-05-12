@@ -35,7 +35,8 @@ internal class OrganizadorCaixas : IOrganizadorCaixas
                 prateleirasArrumadas.AddRange(solucoes.SelectMany(s => s.Arrumar(caixas, prateleira)));
             }
             var maisOtimizada = prateleirasArrumadas
-                .OrderBy(p => p.VolumeNaoUtilizado)
+                .OrderBy(p => p.Ordem)
+                .ThenBy(p => p.VolumeNaoUtilizado)
                 .First();
             retorno.Add(maisOtimizada);
             prateleiras.Remove(maisOtimizada);

@@ -8,6 +8,7 @@ public class Prateleira : IEquatable<Prateleira>
     public string Nome { get; set; } = string.Empty;
     public decimal Altura { get; set; }
     public decimal Largura { get; set; }
+    public int Ordem { get; set; }
 
     public decimal Profundidade { get; set; }
 

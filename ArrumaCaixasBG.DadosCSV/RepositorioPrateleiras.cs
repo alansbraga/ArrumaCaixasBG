@@ -17,7 +17,8 @@ internal class RepositorioPrateleiras : RepositorioCSV<Prateleira, PrateleiraInt
             Altura = registroInterno.Altura,
             Largura = registroInterno.Largura,
             Nome = registroInterno.Nome,
-            Profundidade = registroInterno.Profundidade
+            Profundidade = registroInterno.Profundidade,
+            Ordem = registroInterno.Ordem == 0 ? 5000 : registroInterno.Ordem
         };
     }
 

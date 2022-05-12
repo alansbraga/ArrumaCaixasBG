@@ -17,6 +17,7 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
         foreach (var prateleira in resultado.Prateleiras)
         {
             using var imagem = new Bitmap((int)prateleira.Largura + 2, (int)prateleira.Altura + 2);
+            //using var imagemCinza = new Bitmap((int)prateleira.Largura + 2, (int)prateleira.Altura + 2);
             var yMax = (int)(imagem.Height - 1);
             var caixasAgrupadas = prateleira
                 .Caixas
@@ -33,13 +34,15 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
                     {
                         for (var y = (int)caixa.Y; y < (int)(caixa.Y + caixa.Altura); y++)
                         {
+                            
+
                             var yImagem = yMax - y;
                             imagem.SetPixel(x, yImagem, cor);
                         }
                     }
                 }
                 imagem.Save($@"c:\tmp\ArrumaBG\ImagemPrateleira\{prateleira.Nome}-{caixaAgrupada.Key}.bmp");
-
+                /*
                 for (int x = 0; x < imagem.Width; x++)
                 {
                     for (int y = 0; y < imagem.Height; y++)
@@ -49,6 +52,7 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
                         imagem.SetPixel(x, y, novoC);
                     }
                 }
+                */
             }
 
         }

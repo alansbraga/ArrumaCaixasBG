@@ -31,7 +31,8 @@ internal class SolucaoOrganizadorBinPacking : ISolucaoOrganizador
                 Altura = prateleira.Altura,
                 Largura = prateleira.Largura,
                 Nome = prateleira.Nome,
-                Profundidade = prateleira.Profundidade
+                Profundidade = prateleira.Profundidade,
+                Ordem = prateleira.Ordem
             };
 
             novaPrateleira.SubstituiCaixas(resultado.Select(c => new CaixaArrumada()
