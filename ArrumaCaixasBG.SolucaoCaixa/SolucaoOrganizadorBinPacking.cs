@@ -16,7 +16,7 @@ internal class SolucaoOrganizadorBinPacking : ISolucaoOrganizador
         var novasCaixas = caixas.Select(c => new Cuboid(c.Largura, c.Altura, c.Comprimento, c.Peso, c));
         var binPacker = BinPacker.GetDefault(BinPackerVerifyOption.All);
         var parameter = new BinPackParameter(
-            prateleira.Largura, prateleira.Altura, prateleira.Profundidade,
+            prateleira.Profundidade, prateleira.Largura, prateleira.Altura,
             novasCaixas.Sum(a => a.Weight) * 4, true, novasCaixas);
         var result = binPacker.Pack(parameter);
         return TransformaPrateleiraComCaixa(prateleira, result.BestResult);
@@ -36,14 +36,14 @@ internal class SolucaoOrganizadorBinPacking : ISolucaoOrganizador
 
             novaPrateleira.SubstituiCaixas(resultado.Select(c => new CaixaArrumada()
             {
-                Altura = c.Height,
-                Comprimento = c.Depth,
-                Largura = c.Width,
+                Altura = c.Depth,
+                Comprimento = c.Width,
+                Largura = c.Height,
                 Nome = ((Caixa)c.Tag).Nome,
                 Peso = c.Weight,
-                X = c.X,
-                Y = c.Y,
-                Z = c.Z
+                X = c.Y,
+                Y = c.Z,
+                Z = c.X
             }));
             yield return novaPrateleira;
         }
