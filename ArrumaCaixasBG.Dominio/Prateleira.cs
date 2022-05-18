@@ -38,4 +38,9 @@ public class Prateleira : IEquatable<Prateleira>
 
         return Nome == other.Nome;
     }
+
+    public override int GetHashCode()
+    {
+        return Nome.GetHashCode();
+    }
 }

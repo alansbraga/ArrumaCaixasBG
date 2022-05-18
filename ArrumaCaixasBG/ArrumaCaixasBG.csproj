@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArrumaCaixasBG.DadosCSV\ArrumaCaixasBG.DadosCSV.csproj" />
+    <ProjectReference Include="..\ArrumaCaixasBG.GeraXML\ArrumaCaixasBG.GeraXML.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.MostrarImagens\ArrumaCaixasBG.MostrarImagens.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj" />
   </ItemGroup>

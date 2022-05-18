@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharp3DBinPacking", "Sharp3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrumaCaixasBG.SolucaoCaixa", "ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj", "{70CA3B7C-3CE9-4C60-9867-DE6094DF76FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrumaCaixasBG.MostrarImagens", "ArrumaCaixasBG.MostrarImagens\ArrumaCaixasBG.MostrarImagens.csproj", "{B9AF1CEB-6101-46AF-A753-FE9D979A2306}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrumaCaixasBG.MostrarImagens", "ArrumaCaixasBG.MostrarImagens\ArrumaCaixasBG.MostrarImagens.csproj", "{B9AF1CEB-6101-46AF-A753-FE9D979A2306}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArrumaCaixasBG.GeraXML", "ArrumaCaixasBG.GeraXML\ArrumaCaixasBG.GeraXML.csproj", "{E4ED93F3-F232-46A3-A352-EAFA2590C937}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9AF1CEB-6101-46AF-A753-FE9D979A2306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4ED93F3-F232-46A3-A352-EAFA2590C937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4ED93F3-F232-46A3-A352-EAFA2590C937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4ED93F3-F232-46A3-A352-EAFA2590C937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4ED93F3-F232-46A3-A352-EAFA2590C937}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
