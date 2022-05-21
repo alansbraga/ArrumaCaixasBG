@@ -26,8 +26,8 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
 
     public void Mostrar(ResultadoOrganizacao resultado)
     {
-        Directory.Delete(pastaSalvar, true);
-        Directory.CreateDirectory(pastaSalvar);
+        //Directory.Delete(pastaSalvar, true);
+        //Directory.CreateDirectory(pastaSalvar);
         var cinzaAtual = 0;
         var lista = new List<CaixaCorPrateleira>();
         var rnd = new Random();

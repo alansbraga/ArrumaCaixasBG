@@ -12,7 +12,7 @@ console
         services.AddArrumaCaixaBGDominio();
         services.AddDadosCSV(configuracao);
         //services.AddSolucoesComoCaixa();
-        services.AddSolucoesAPI();
+        services.AddSolucoesXML();
         services.AddArrumaCaixaBGMostrarEmImagens();
 
         services.AddTransient<ControlePrincipal>();
