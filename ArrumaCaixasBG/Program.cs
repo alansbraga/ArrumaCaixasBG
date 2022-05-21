@@ -11,7 +11,8 @@ console
         services.AddASBConsole();
         services.AddArrumaCaixaBGDominio();
         services.AddDadosCSV(configuracao);
-        services.AddSolucoesComoCaixa();
+        //services.AddSolucoesComoCaixa();
+        services.AddSolucoesAPI();
         services.AddArrumaCaixaBGMostrarEmImagens();
 
         services.AddTransient<ControlePrincipal>();
