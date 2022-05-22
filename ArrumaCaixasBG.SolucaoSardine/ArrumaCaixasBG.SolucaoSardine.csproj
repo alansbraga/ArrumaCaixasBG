@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArrumaCaixasBG.Dominio\ArrumaCaixasBG.Dominio.csproj" />
+    <ProjectReference Include="..\sardine-can\SC.Heuristics\SC.Heuristics.csproj" />
+    <ProjectReference Include="..\sardine-can\SC.Linear\SC.Linear.csproj" />
+    <ProjectReference Include="..\sardine-can\SC.ObjectModel\SC.ObjectModel.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,3 +1,6 @@
 [submodule "Sharp3DBinPacking"]
 	path = Sharp3DBinPacking
 	url = https://github.com/alansbraga/Sharp3DBinPacking.git
+[submodule "sardine-can"]
+	path = sardine-can
+	url = https://github.com/alansbraga/sardine-can.git

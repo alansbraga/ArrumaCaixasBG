@@ -26,6 +26,7 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
 
     public void Mostrar(ResultadoOrganizacao resultado)
     {
+        File.WriteAllText($@"{pastaSalvar}\arrumacao.json", JsonSerializer.Serialize(resultado));
         //Directory.Delete(pastaSalvar, true);
         //Directory.CreateDirectory(pastaSalvar);
         var cinzaAtual = 0;
@@ -53,9 +54,10 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
                     {
                         for (var y = (int)caixa.Y; y < (int)(caixa.Y + caixa.Altura); y++)
                         {
-                            
+
 
                             var yImagem = yMax - y;
+                            
                             imagem.SetPixel(x, yImagem, cor);
                             imagemCinza.SetPixel(x, yImagem, cinzas[cinzaAtual]);
                         }

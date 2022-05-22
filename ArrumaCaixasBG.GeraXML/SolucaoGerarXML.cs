@@ -11,17 +11,10 @@ namespace ArrumaCaixasBG.GeraXML;
 internal class SolucaoGerarXML : ISolucaoOrganizador
 {
     internal string local = @"C:\tmp\ArrumaBG\ImagemPrateleira";
-    readonly HashSet<Prateleira> prateleiras = new();
+    internal readonly Dictionary<int, Caixa> caixaComId = new();
 
     public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
-        prateleiras.Add(new Prateleira()
-        {
-            Profundidade = prateleira.Profundidade,
-            Altura = prateleira.Altura,
-            Largura = prateleira.Largura,
-            Nome = prateleira.Nome
-        });
         var instance = new Instance
         {
             Containers = new Containers(),
@@ -32,22 +25,17 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
         {
 
         };
-        var seqPrat = 1;
-        foreach (var prat in prateleiras)
+        instance.Containers.Container.Add(new Container()
         {
-            instance.Containers.Container.Add(new Container()
+            Cube = new Cube()
             {
-                Cube = new Cube()
-                {
-                    Length = (int)prat.Profundidade,
-                    Height = (int)prat.Altura,
-                    Width = (int)prat.Largura,
-                    Point = new()
-                },
-                ID = seqPrat
-            });
-            seqPrat++;
-        }
+                Length = (int)prateleira.Profundidade,
+                Height = (int)prateleira.Altura,
+                Width = (int)prateleira.Largura,
+                Point = new()
+            },
+            ID = 1
+        });
 
         instance.Pieces = new()
         {
@@ -55,9 +43,11 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
 
         };
 
+        caixaComId.Clear();
         var seq = 1;
         foreach (var caixa in caixas.OrderBy(c => c.Nome))
         {
+            caixaComId.Add(seq, caixa);
             instance.Pieces.Piece.Add(new Piece()
             {
                 Components = new()
@@ -76,7 +66,7 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
                 ID = seq,
                 ForbiddenOrientations = "",
                 Material = "Default",
-                Stackable = true
+                Stackable = "True"
             });
             seq++;
         }
@@ -84,8 +74,61 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
         var serializer = new XmlSerializer(typeof(Instance));
         using var stream = new MemoryStream();
         serializer.Serialize(stream, instance);
-        File.WriteAllBytes(Path.Combine(local, $"Tudo.xinst"), stream.ToArray());
+        var arquivoBase = Path.Combine(local, "Tudo");
+        var arquivoAntes = arquivoBase + ".xinst";
+        var arquivoDepois = arquivoBase + "-Organizado.xinst";
+        File.WriteAllBytes(arquivoAntes, stream.ToArray());
+        if (File.Exists(arquivoDepois))
+            File.Delete(arquivoDepois);
+        while (!File.Exists(arquivoDepois))
+        {
+            Thread.Sleep(1000);
+        }
+
         
-        return new[] { prateleira };
+
+        return CriaPrateleiras(prateleira, arquivoDepois);
+    }
+
+    private IEnumerable<Prateleira> CriaPrateleiras(Prateleira prateleira, string arquivoDepois)
+    {
+        var retorno = new List<Prateleira>();
+        var serializer = new XmlSerializer(typeof(Instance));
+        using var stream = new MemoryStream(File.ReadAllBytes(arquivoDepois));
+
+        if (serializer.Deserialize(stream) is not Instance instancia)
+            return retorno;
+
+        foreach (var prateleiraSol in instancia.Solutions.Solution.Bins.Bin)
+        {
+            var prateleiraAtual = new Prateleira
+            {
+                Altura = prateleira.Altura,
+                Largura = prateleira.Largura,
+                Nome = prateleira.Nome,
+                Ordem = prateleira.Ordem,
+                Profundidade = prateleira.Profundidade
+            };
+            var listaArrumada = new List<CaixaArrumada>();
+            foreach (var item in prateleiraSol.Item)
+            {
+                var caixaOriginal = caixaComId[item.ID];
+                var novaCaixa = new CaixaArrumada
+                {
+                    X = item.Point.X,
+                    Y = item.Point.Y,
+                    Z = item.Point.Z,
+                    Nome = caixaOriginal.Nome,
+
+                };
+                listaArrumada.Add(novaCaixa);
+            }
+            prateleiraAtual.SubstituiCaixas(listaArrumada); 
+            retorno.Add(prateleiraAtual);
+        }
+        
+
+
+        return retorno;
     }
 }

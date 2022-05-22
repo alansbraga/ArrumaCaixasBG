@@ -97,7 +97,7 @@ public class Piece
     public string Material { get; set; }
 
     [XmlAttribute(AttributeName = "Stackable")]
-    public bool Stackable { get; set; }
+    public string Stackable { get; set; }
 }
 
 [XmlRoot(ElementName = "Pieces")]
@@ -106,6 +106,58 @@ public class Pieces
 
     [XmlElement(ElementName = "Piece")]
     public List<Piece> Piece { get; set; }
+}
+
+[XmlRoot(ElementName = "Item")]
+public class Item
+{
+
+    [XmlElement(ElementName = "Point")]
+    public Point Point { get; set; }
+
+    [XmlAttribute(AttributeName = "ID")]
+    public int ID { get; set; }
+
+    [XmlAttribute(AttributeName = "Orientation")]
+    public int Orientation { get; set; }
+}
+
+[XmlRoot(ElementName = "Bin")]
+public class Bin
+{
+
+    [XmlElement(ElementName = "Item")]
+    public List<Item> Item { get; set; }
+
+    [XmlAttribute(AttributeName = "ID")]
+    public int ID { get; set; }
+}
+
+[XmlRoot(ElementName = "Bins")]
+public class Bins
+{
+
+    [XmlElement(ElementName = "Bin")]
+    public List<Bin> Bin { get; set; }
+}
+
+[XmlRoot(ElementName = "Solution")]
+public class Solution
+{
+
+    [XmlElement(ElementName = "Bins")]
+    public Bins Bins { get; set; }
+
+    [XmlAttribute(AttributeName = "ID")]
+    public int ID { get; set; }
+}
+
+[XmlRoot(ElementName = "Solutions")]
+public class Solutions
+{
+
+    [XmlElement(ElementName = "Solution")]
+    public Solution Solution { get; set; }
 }
 
 [XmlRoot(ElementName = "Instance")]
@@ -119,7 +171,7 @@ public class Instance
     public Pieces Pieces { get; set; }
 
     [XmlElement(ElementName = "Solutions")]
-    public object Solutions { get; set; }
+    public Solutions Solutions { get; set; }
 
     [XmlAttribute(AttributeName = "Version")]
     public string Version { get; set; }
