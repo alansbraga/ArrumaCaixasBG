@@ -15,7 +15,6 @@
     <ProjectReference Include="..\ArrumaCaixasBG.DadosCSV\ArrumaCaixasBG.DadosCSV.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.GeraXML\ArrumaCaixasBG.GeraXML.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.MostrarImagens\ArrumaCaixasBG.MostrarImagens.csproj" />
-    <ProjectReference Include="..\ArrumaCaixasBG.SolucaoAPI\ArrumaCaixasBG.SolucaoAPI.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.SolucaoSardine\ArrumaCaixasBG.SolucaoSardine.csproj" />
   </ItemGroup>
