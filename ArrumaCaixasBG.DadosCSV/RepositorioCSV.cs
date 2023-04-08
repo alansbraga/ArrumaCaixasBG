@@ -10,7 +10,7 @@ internal abstract class RepositorioCSV<T, TInterno> : IRepositorio<T>
 {
     private readonly IOptions<ConfiguracaoCSV> configuracao;
 
-    public RepositorioCSV(IOptions<ConfiguracaoCSV> configuracao)
+    protected RepositorioCSV(IOptions<ConfiguracaoCSV> configuracao)
     {
         this.configuracao = configuracao;
     }

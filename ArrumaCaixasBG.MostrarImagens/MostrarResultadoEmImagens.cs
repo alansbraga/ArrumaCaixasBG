@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Xml.Linq;
+using Microsoft.Extensions.Options;
 
 namespace ArrumaCaixasBG.MostrarImagens;
 
@@ -23,10 +24,20 @@ internal class MostrarResultadoEmImagens : IMostrarResultado
         Color.LightSlateGray,
         Color.SlateGray
     };
+    private readonly IOptions<ConfiguracaoImagem> configuracao;
+
+    public MostrarResultadoEmImagens(IOptions<ConfiguracaoImagem> configuracao)
+    {
+        this.configuracao = configuracao;
+    }
 
     public void Mostrar(ResultadoOrganizacao resultado)
     {
-        File.WriteAllText($@"{pastaSalvar}\arrumacao.json", JsonSerializer.Serialize(resultado));
+        var caminho = string.IsNullOrWhiteSpace(configuracao.Value.PastaDestino)
+            ? pastaSalvar
+            : configuracao.Value.PastaDestino;
+        caminho = Path.Combine(caminho, "arrumacao.json");
+        File.WriteAllText(caminho, JsonSerializer.Serialize(resultado));
         //Directory.Delete(pastaSalvar, true);
         //Directory.CreateDirectory(pastaSalvar);
         var cinzaAtual = 0;

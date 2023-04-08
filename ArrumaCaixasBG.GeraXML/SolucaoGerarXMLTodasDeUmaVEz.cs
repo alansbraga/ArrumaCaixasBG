@@ -1,5 +1,6 @@
 ﻿using ArrumaCaixasBG.Dominio;
 using ArrumaCaixasBG.Dominio.Interfaces;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,12 @@ internal class SolucaoGerarXMLTodasDeUmaVEz : ISolucaoOrganizador
 {
     internal string local = @"C:\tmp\ArrumaBG\ImagemPrateleira";
     internal readonly HashSet<Prateleira> prateleiras = new();
+    private readonly IOptions<ConfiguracaoXML> configuracao;
+
+    public SolucaoGerarXMLTodasDeUmaVEz(IOptions<ConfiguracaoXML> configuracao)
+    {
+        this.configuracao = configuracao;
+    }
 
     public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
@@ -84,7 +91,10 @@ internal class SolucaoGerarXMLTodasDeUmaVEz : ISolucaoOrganizador
         var serializer = new XmlSerializer(typeof(Instance));
         using var stream = new MemoryStream();
         serializer.Serialize(stream, instance);
-        File.WriteAllBytes(Path.Combine(local, $"Tudo.xinst"), stream.ToArray());
+        var caminho = string.IsNullOrWhiteSpace(configuracao.Value.PastaImagem)
+            ? local
+            : configuracao.Value.PastaImagem;
+        File.WriteAllBytes(Path.Combine(caminho, $"Tudo.xinst"), stream.ToArray());
         
         return new[] { prateleira };
     }

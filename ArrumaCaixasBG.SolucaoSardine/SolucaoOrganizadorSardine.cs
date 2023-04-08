@@ -6,11 +6,18 @@ using SC.ObjectModel;
 using SC.ObjectModel.Configuration;
 using SC.ObjectModel.Elements;
 using SC.ObjectModel.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace ArrumaCaixasBG.SolucaoSardine;
 internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
 {
     internal readonly Dictionary<int, Caixa> caixaComId = new();
+    private readonly IOptions<ConfiguracaoXML> configuracao;
+
+    public SolucaoOrganizadorSardine(IOptions<ConfiguracaoXML> configuracao)
+    {
+        this.configuracao = configuracao;
+    }
     public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
         var retorno = new List<Prateleira>();
@@ -22,7 +29,9 @@ internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
             if (metodo.HasSolution)
             {
                 ConverteSolucao(prateleira, retorno, metodo.Solution);
-                metodo.Solution.InstanceLinked.WriteXML(@$"C:\tmp\ArrumaBG\xmls\{prateleira.Nome}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss-fff}.xinst");
+                var caminho = Path.Combine(configuracao.Value.PastaDestino, 
+                    @$"{prateleira.Nome}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss-fff}.xinst");
+                metodo.Solution.InstanceLinked.WriteXML(caminho);
             }
                 
         }
