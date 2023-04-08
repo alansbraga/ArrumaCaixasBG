@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ArrumaCaixasBG/ArrumaCaixasBG.csproj",
+                "${workspaceFolder}/ArrumaCaixasBG.Blazor/ArrumaCaixasBG.Blazor.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

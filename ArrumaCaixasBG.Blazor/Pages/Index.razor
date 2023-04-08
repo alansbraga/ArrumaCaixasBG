@@ -1,0 +1,42 @@
+﻿@page "/"
+
+<label>@total</label>
+<div class="row justify-content-center">
+    <div class="col-12 v3d">
+        <Viewer @ref="View3D1" ViewerSettings=@settings Scene=scene />
+    </div>
+</div>
+
+
+@code
+{
+    private int total = 0;
+    private Viewer View3D1 = null!;
+    private Guid objGuid;
+    private ViewerSettings settings = new ViewerSettings()
+        {
+            ContainerId = "example1",
+        };
+
+    private Scene scene = new Scene();
+    protected override Task OnInitializedAsync()
+    {
+        scene.Add(new AmbientLight());
+        scene.Add(new PointLight()
+            {
+                Position = new Vector3
+                {
+                    X = 1,
+                    Y = 3,
+                    Z = 0
+                }
+            });
+        foreach (var c in GeraClasses.CriaCaixas())
+        {
+            total++;
+            scene.Add(c);
+        }
+
+        return base.OnInitializedAsync();
+    }
+}
