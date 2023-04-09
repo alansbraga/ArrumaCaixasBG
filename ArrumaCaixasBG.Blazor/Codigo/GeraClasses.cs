@@ -11,7 +11,7 @@ using Blazor3D.Objects;
 using Blazor3D.Geometires;
 using Blazor3D.Enums;
 using Blazor3D.Core;
-
+using Blazor3D.Helpers;
 
 namespace ArrumaCaixasBG.Blazor.Codigo;
 public static class GeraClasses
@@ -204,27 +204,41 @@ public static class GeraClasses
     {
         var prateleira = Prateleira();
         var retorno = new List<Object3D>();
-
-        retorno.Add(new Mesh
+        retorno.Add(new AxesHelper(400));
+        retorno.Add(new ArrowHelper()
+        {
+            Origin = new Vector3()
             {
-                Geometry = new BoxGeometry
-                {
-                    Width = (float)(prateleira.Largura / 100m),
-                    Height = (float)(prateleira.Altura / 100m),
-                    Depth = (float)(prateleira.Profundidade / 100m)
-                },
-                Material = new MeshStandardMaterial()
-                {
-                    Wireframe = true
-                },
-                Position = new Vector3
-                {
-                    X = 0,
-                    Y = 0,
-                    Z = 0
-                }
+                X = ArrumaVertice(0m, prateleira.Largura),
+                Y = (float) ((prateleira.Altura / 100m) + 1m),
+                Z = (float) ((prateleira.Profundidade / 100m) + 1m)
+            },
+            Length = 3,
+            Dir = new Vector3(0,0,-1)
+        });
 
-            });
+        var item = new Mesh
+        {
+            Geometry = new BoxGeometry
+            {
+                Width = (float)(prateleira.Largura / 100m),
+                Height = (float)(prateleira.Altura / 100m),
+                Depth = (float)(prateleira.Profundidade / 100m)
+            },
+            Material = new MeshStandardMaterial()
+            {
+                Wireframe = true
+            },
+            Position = new Vector3
+            {
+                X = 0,
+                Y = 0,
+                Z = 0
+            }
+
+        };
+        
+        //retorno.Add(item);
         var rnd = new Random();
         foreach (var caixa in prateleira.Caixas)
         {
@@ -243,23 +257,37 @@ public static class GeraClasses
         };
 
         var caixa3D = new Mesh
+        {
+            Geometry = new BoxGeometry
             {
-                Geometry = new BoxGeometry
-                {
-                    Width = (float)(caixa.Largura / 100m),
-                    Height = (float)(caixa.Altura / 100m),
-                    Depth = (float)(caixa.Comprimento / 100m)
-                },
-                Material = material,
-                Position = new Vector3
-                {
-                    X = (float)(caixa.X / 100m),
-                    Y = (float)(caixa.Y / 100m),
-                    Z = (float)(caixa.Z / 100m)
-                }
-
-            };
+                Width = (float)(caixa.Largura / 100m),
+                Height = (float)(caixa.Altura / 100m),
+                Depth = (float)(caixa.Comprimento / 100m)
+            },
+            Material = material,
+            Position = ArrumaPosicao(caixa),
+            Name = caixa.ToString()
+        };
         retorno.Add(caixa3D);
+    }
+
+    public static Vector3 ArrumaPosicao(CaixaArrumada caixa)
+    {
+        return new Vector3
+        {
+            X = ArrumaVertice(caixa.X, caixa.Largura),
+            Y = ArrumaVertice(caixa.Y, caixa.Altura),
+            Z = ArrumaVertice(caixa.Z, caixa.Comprimento)
+        };
+
+    }
+
+    public static float ArrumaVertice(decimal valor, decimal tamanho)
+    {
+        var novo = valor / 100;
+        var novoTamanho = tamanho /2 / 100;
+        novo += novoTamanho;
+        return (float)novo;
     }
 
 }
