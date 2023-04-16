@@ -1,13 +1,14 @@
 ﻿using ArrumaCaixasBG.Dominio;
 using System.Text.Json;
 using Blazor3D.Maths;
+using System.Buffers.Text;
 
 namespace ArrumaCaixasBG.Blazor.Codigo;
 public static class Uteis
 {
     private const string jsonString = """""
     {
-      "Nome": "Quadrado1 ",
+      "Nome": "Exemplo",
       "Altura": 295,
       "Largura": 424,
       "Ordem": 5000,
@@ -189,6 +190,12 @@ public static class Uteis
        return retorno;
     }
 
+    public static Arrumacao? CriaArrumacao(string conteudo)
+    {
+        var retorno = JsonSerializer.Deserialize<Arrumacao>(conteudo);
+        return retorno;
+    }
+
     public static Vector3 ArrumaPosicao(CaixaArrumada caixa)
     {
         return new Vector3
@@ -208,4 +215,10 @@ public static class Uteis
         return (float)novo;
     }
 
+}
+
+public class Arrumacao
+{
+    public string Nome { get; set; }
+    public IEnumerable<Prateleira> Prateleiras { get; set; }
 }

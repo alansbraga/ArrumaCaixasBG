@@ -1,6 +1,7 @@
 @using ArrumaCaixasBG.Dominio
 
-<RadzenListBox TValue="string" Data=@DadosTela.Caixas TextProperty="Nome" ValueProperty="Nome"
+
+<RadzenListBox @ref="lista" @bind-Value="Selecionado" Data=@DadosTela.Caixas 
                AllowClear=true Placeholder="Caixas" Style="width: 100%; max-width: 200px; height: 400px">
     <Template>
         @{
@@ -14,13 +15,26 @@
 
 
 @code {
-    [Parameter]
-    public DadosTela DadosTela { get; set; }
 
-    protected override void OnInitialized()
+    [Parameter]
+    public DadosTela DadosTela
     {
-        base.OnInitialized();
-        
+        get => dadosTela;
+        set
+        {
+            dadosTela = value;
+            StateHasChanged();
+        }
     }
 
+    private CaixaBlazor? Selecionado { get; set; }
+    private RadzenListBox<CaixaBlazor?>? lista;
+    private DadosTela dadosTela;
+
+    public void SelecionarItem(CaixaBlazor? caixa)
+    {
+        if (lista is not null)
+            Selecionado = caixa;
+        StateHasChanged();
+    }
 }

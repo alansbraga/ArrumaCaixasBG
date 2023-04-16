@@ -3,7 +3,40 @@
 @code {
 
     [Parameter]
-    public DadosTela DadosTela { get; set; }
+    public DadosTela? DadosTela
+    {
+        get => dadosTela;
+        set
+        {
+            if (dadosTela == value)
+                return;
+            dadosTela = value;
+            CriaCena();
+        }
+    }
+
+    private void CriaCena()
+    {
+        visao?.ClearSceneAsync();
+        if (DadosTela is null)
+            return;
+        
+        foreach (var item in DadosTela.Adicionais)
+        {
+            scene.Add(item);
+        }
+        foreach (var c in DadosTela.Caixas)
+        {
+            scene.Add(c.Objeto3D);
+        }
+        camera = this.DadosTela.Camera;
+        visao?.UpdateScene();
+        visao?.UpdateCamera(camera);
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public EventCallback<CaixaBlazor?> MudouSelecao { get; set; }
 
     public CaixaBlazor? Selecionado { get; private set; } = null;
     private Viewer visao = null!;
@@ -17,28 +50,12 @@
 
     private Scene scene = new Scene();
     private Camera camera = null!;
-    
-    protected override Task OnInitializedAsync()
-    {
-
-        foreach (var item in DadosTela.Adicionais)
-        {
-            scene.Add(item);
-        }
-        foreach (var c in DadosTela.Caixas)
-        {
-            scene.Add(c.Objeto3D);
-        }
-        camera = this.DadosTela.Camera;
-
-        return base.OnInitializedAsync();
-    }
+    private DadosTela? dadosTela;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-    // subscribe events only once
             visao.ObjectSelected += OnObjectSelected;
         }
 
@@ -47,10 +64,17 @@
     
     private void OnObjectSelected(Object3DArgs e)
     {
-        var caixa = DadosTela
-            .Caixas
-            .SingleOrDefault(c => c.Objeto3D.Uuid == e.UUID);
+        CaixaBlazor? caixa = null;
+        if (DadosTela is not null)
+        {
+            caixa = DadosTela
+                .Caixas
+                .SingleOrDefault(c => c.Objeto3D.Uuid == e.UUID);
+        }
         Selecionado = caixa;
+        MudouSelecao.InvokeAsync(Selecionado)
+            .GetAwaiter()
+            .GetResult();
         StateHasChanged();
     }
 

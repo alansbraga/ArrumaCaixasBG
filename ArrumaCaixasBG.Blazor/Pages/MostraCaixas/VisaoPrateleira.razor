@@ -1,32 +1,63 @@
 @using ArrumaCaixasBG.Dominio
 @inject CaixasTelaServico Servico
 
-<RadzenRow AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3" TextAlign="TextAlign.Center">@Prateleira?.Nome</RadzenText>
+<RadzenRow AlignItems="AlignItems.Center" Style="width: 100%">
+    <RadzenDropDown TValue="Prateleira" @bind-Value=@Prateleira  Data=@prateleiras TextProperty="Nome" Style="width: 100%" ></RadzenDropDown>
 </RadzenRow>
-<RadzenRow>
-   <RadzenText TextStyle="TextStyle.Caption">@prateleira3d?.Selecionado?.Nome</RadzenText> 
+<RadzenRow Style="width: 100%">
+   <RadzenText Text=@(prateleira3d?.Selecionado?.Nome ?? "Nenhuma caixa selecionada") TextStyle="TextStyle.Caption"></RadzenText> 
 </RadzenRow>
-<RadzenRow >
+<RadzenRow Style="width: 100%">
     <RadzenColumn Size="2">
-        <ListaCaixas DadosTela=@dadosTela></ListaCaixas>
+        <ListaCaixas @ref="lista" DadosTela=@dadosTela></ListaCaixas>
     </RadzenColumn>
     <RadzenColumn Size="10">
-        <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela></Prateleira3D>
+        <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela MudouSelecao=Mudou></Prateleira3D>
     </RadzenColumn>
 </RadzenRow>
 @code {
+
+    private List<Prateleira> prateleiras = new();
     [Parameter]
-    public Prateleira? Prateleira { get; set; }
+    public IEnumerable<Prateleira> Prateleiras
+    {
+        get => prateleiras.ToArray();
+        set 
+        {
+            prateleiras.Clear();
+            prateleiras.AddRange(value);
+            Prateleira = prateleiras.FirstOrDefault();
+        }
+    }
 
-    private DadosTela? dadosTela;
-    private Prateleira3D? prateleira3d;
+    private Prateleira? Prateleira
+    {
+        get => prateleira;
+        set
+        {
+            if (prateleira == value)
+                return;
+            prateleira = value;
+            CriaDadosTela();
+        }
+    }
 
-    protected override void OnInitialized()
+    private void CriaDadosTela()
     {
         if (this.Prateleira is not null)
             dadosTela = Servico.Transforma(this.Prateleira);
-        base.OnInitialized();
+    }
+
+    private DadosTela? dadosTela;
+    private Prateleira3D? prateleira3d;
+    private ListaCaixas? lista;
+    private Prateleira? prateleira;
+
+    private Task Mudou(CaixaBlazor? caixa)
+    {
+        lista?.SelecionarItem(caixa);
+
+        return Task.CompletedTask;
     }
 
 }
