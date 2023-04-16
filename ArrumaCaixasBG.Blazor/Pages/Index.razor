@@ -1,93 +1,12 @@
 ﻿@page "/"
+@using ArrumaCaixasBG.Dominio
 
-<div class="row justify-content-center">
-    <div class="col-12 v3d">
-        <Viewer @ref="View3D1" ViewerSettings=@settings Scene=scene Camera=camera />
-    </div>
-</div>
 
-<div>@msg</div>
+<VisaoPrateleira Prateleira=@prateleira></VisaoPrateleira>
 
 @code
 {
-    private Viewer View3D1 = null!;
-    private string msg = string.Empty;
-    private ViewerSettings settings = new ViewerSettings()
-        {
-            ContainerId = "example1",
-            CanSelect = true,
-            SelectedColor = "black"
-        };
+    private Prateleira prateleira = Uteis.Prateleira();
+    
 
-    private Scene scene = new Scene();
-    private Camera camera = null;
-    protected override Task OnInitializedAsync()
-    {
-        
-        scene.Add(new AmbientLight());
-        scene.Add(new PointLight()
-            {
-                Position = new Vector3
-                {
-                    X = 100,
-                    Y = 300,
-                    Z = 0
-                }
-            });
-        foreach (var c in GeraClasses.CriaCaixas())
-        {
-            scene.Add(c);
-        }
-                    var prateleira = GeraClasses.Prateleira();
-            var posicao = new Vector3()
-            {
-                X = GeraClasses.ArrumaVertice(0m, prateleira.Largura),
-                Y = GeraClasses.ArrumaVertice(0m, prateleira.Altura),
-                Z = (float) ((prateleira.Profundidade / 100m) + 3m)                
-
-            };
-            var olharPara = new Vector3()
-            {
-                X = posicao.X,
-                Y = posicao.Y,
-                Z = 0
-            };
-            camera = new PerspectiveCamera
-                {
-                    Position = posicao,
-                    LookAt = olharPara
-                };
-
-        return base.OnInitializedAsync();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // subscribe events only once
-            View3D1.ObjectSelected += OnObjectSelected;
-
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-        private void OnObjectSelected(Object3DArgs e)
-    {
-        foreach (var item in scene.Children)
-        {
-            if (item.Uuid == e.UUID)
-            {
-                this.msg = $""""
-                    Nome = {item.Name}
-                    X = {item.Position.X}
-                    Y = {item.Position.Y}
-                    Z = {item.Position.Z}
-                """";
-                StateHasChanged();
-                break;
-            }
-        }
-    }
 }

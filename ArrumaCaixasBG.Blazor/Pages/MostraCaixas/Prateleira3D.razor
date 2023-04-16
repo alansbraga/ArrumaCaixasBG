@@ -1,0 +1,57 @@
+<Viewer @ref="visao" ViewerSettings=@settings Scene=scene Camera=camera />
+
+@code {
+
+    [Parameter]
+    public DadosTela DadosTela { get; set; }
+
+    public CaixaBlazor? Selecionado { get; private set; } = null;
+    private Viewer visao = null!;
+    private ViewerSettings settings = new ViewerSettings()
+    {
+        ContainerId = "prateleira",
+        CanSelect = true,
+        CanSelectHelpers = false,
+        SelectedColor = "black"
+    };
+
+    private Scene scene = new Scene();
+    private Camera camera = null!;
+    
+    protected override Task OnInitializedAsync()
+    {
+
+        foreach (var item in DadosTela.Adicionais)
+        {
+            scene.Add(item);
+        }
+        foreach (var c in DadosTela.Caixas)
+        {
+            scene.Add(c.Objeto3D);
+        }
+        camera = this.DadosTela.Camera;
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+    // subscribe events only once
+            visao.ObjectSelected += OnObjectSelected;
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    private void OnObjectSelected(Object3DArgs e)
+    {
+        var caixa = DadosTela
+            .Caixas
+            .SingleOrDefault(c => c.Objeto3D.Uuid == e.UUID);
+        Selecionado = caixa;
+        StateHasChanged();
+    }
+
+}

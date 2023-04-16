@@ -1,20 +1,9 @@
 ﻿using ArrumaCaixasBG.Dominio;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using Blazor3D.Viewers;
-using Blazor3D.Settings;
-using Blazor3D.Scenes;
-using Blazor3D.Lights;
 using Blazor3D.Maths;
-using Blazor3D.Materials;
-using Blazor3D.Objects;
-using Blazor3D.Geometires;
-using Blazor3D.Enums;
-using Blazor3D.Core;
-using Blazor3D.Helpers;
 
 namespace ArrumaCaixasBG.Blazor.Codigo;
-public static class GeraClasses
+public static class Uteis
 {
     private const string jsonString = """""
     {
@@ -198,77 +187,6 @@ public static class GeraClasses
     {
        var retorno = JsonSerializer.Deserialize<Prateleira>(jsonString);
        return retorno;
-    }
-
-    public static IEnumerable<Object3D> CriaCaixas()
-    {
-        var prateleira = Prateleira();
-        var retorno = new List<Object3D>();
-        retorno.Add(new AxesHelper(400));
-        retorno.Add(new ArrowHelper()
-        {
-            Origin = new Vector3()
-            {
-                X = ArrumaVertice(0m, prateleira.Largura),
-                Y = (float) ((prateleira.Altura / 100m) + 1m),
-                Z = (float) ((prateleira.Profundidade / 100m) + 1m)
-            },
-            Length = 3,
-            Dir = new Vector3(0,0,-1)
-        });
-
-        var item = new Mesh
-        {
-            Geometry = new BoxGeometry
-            {
-                Width = (float)(prateleira.Largura / 100m),
-                Height = (float)(prateleira.Altura / 100m),
-                Depth = (float)(prateleira.Profundidade / 100m)
-            },
-            Material = new MeshStandardMaterial()
-            {
-                Wireframe = true
-            },
-            Position = new Vector3
-            {
-                X = 0,
-                Y = 0,
-                Z = 0
-            }
-
-        };
-        
-        //retorno.Add(item);
-        var rnd = new Random();
-        foreach (var caixa in prateleira.Caixas)
-        {
-            AdicionaCaixa(retorno, rnd, caixa);
-        }
-        
-        return retorno;
-    }
-
-    private static void AdicionaCaixa(IList<Object3D> retorno, Random rnd, CaixaArrumada caixa)
-    {
-        var cor = $"#{rnd.Next(255):X}{rnd.Next(255):X}{rnd.Next(255):X}";
-        var material = new MeshStandardMaterial
-        {
-            Color = cor
-        };
-
-        var caixa3D = new Mesh
-        {
-            Geometry = new BoxGeometry
-            {
-                Width = (float)(caixa.Largura / 100m),
-                Height = (float)(caixa.Altura / 100m),
-                Depth = (float)(caixa.Comprimento / 100m)
-            },
-            Material = material,
-            Position = ArrumaPosicao(caixa),
-            Name = caixa.ToString()
-        };
-        retorno.Add(caixa3D);
     }
 
     public static Vector3 ArrumaPosicao(CaixaArrumada caixa)

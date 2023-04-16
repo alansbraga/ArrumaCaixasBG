@@ -1,0 +1,32 @@
+@using ArrumaCaixasBG.Dominio
+@inject CaixasTelaServico Servico
+
+<RadzenRow AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3" TextAlign="TextAlign.Center">@Prateleira?.Nome</RadzenText>
+</RadzenRow>
+<RadzenRow>
+   <RadzenText TextStyle="TextStyle.Caption">@prateleira3d?.Selecionado?.Nome</RadzenText> 
+</RadzenRow>
+<RadzenRow >
+    <RadzenColumn Size="2">
+        <ListaCaixas DadosTela=@dadosTela></ListaCaixas>
+    </RadzenColumn>
+    <RadzenColumn Size="10">
+        <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela></Prateleira3D>
+    </RadzenColumn>
+</RadzenRow>
+@code {
+    [Parameter]
+    public Prateleira? Prateleira { get; set; }
+
+    private DadosTela? dadosTela;
+    private Prateleira3D? prateleira3d;
+
+    protected override void OnInitialized()
+    {
+        if (this.Prateleira is not null)
+            dadosTela = Servico.Transforma(this.Prateleira);
+        base.OnInitialized();
+    }
+
+}
