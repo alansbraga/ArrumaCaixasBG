@@ -7,6 +7,7 @@
         @{
             var atual = (context as CaixaBlazor) ?? throw new Exception("não vai ser nulo");
         }
+        <RadzenCheckBox TValue="bool" @bind-Value=@atual.Ver />
         <RadzenText TextStyle="TextStyle.Caption">@atual.Nome</RadzenText>
         <br/>
         <button style="background-color: @atual.Cor; width: 100%; height: 1em;"></button>

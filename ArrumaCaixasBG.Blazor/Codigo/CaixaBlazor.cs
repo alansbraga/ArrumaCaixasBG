@@ -9,11 +9,25 @@ namespace ArrumaCaixasBG.Blazor.Codigo;
 public class CaixaBlazor
 {
     private readonly CaixaArrumada caixa;
+    private bool ver = true;
 
     public CaixaArrumada Caixa => caixa;
     public string Nome => Objeto3D.Name;
 
+    public event Func<CaixaBlazor, bool, Task> MudouVer;
+
+
     public string Cor { get; set; }
+
+    public bool Ver {
+        get => ver;
+        set {
+            if (ver == value)
+                return;
+            ver = value;
+            MudouVer.Invoke(this, ver);
+        }
+    }
 
     public CaixaBlazor(CaixaArrumada caixa, string cor)
     {

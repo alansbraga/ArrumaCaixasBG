@@ -27,11 +27,26 @@
         }
         foreach (var c in DadosTela.Caixas)
         {
+            c.MudouVer += MudouVer;
             scene.Add(c.Objeto3D);
         }
         camera = this.DadosTela.Camera;
         visao?.UpdateScene();
         visao?.UpdateCamera(camera);
+        StateHasChanged();
+    }
+
+    private async Task MudouVer(CaixaBlazor caixa, bool novoValor)
+    {
+        if (novoValor)
+        {
+            scene.Add(caixa.Objeto3D);
+        }
+        else
+        {
+            await visao.RemoveByUuidAsync(caixa.Objeto3D.Uuid);
+        }
+        await visao.UpdateScene();
         StateHasChanged();
     }
 
