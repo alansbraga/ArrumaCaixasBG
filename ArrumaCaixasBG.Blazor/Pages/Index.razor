@@ -11,7 +11,7 @@
 
 @code
 {
-    private IEnumerable<Prateleira> prateleiras = new []{ Uteis.Prateleira() };
+    private IEnumerable<Prateleira> prateleiras = Array.Empty<Prateleira>(); //new []{ Uteis.Prateleira() };
     private string conteudo;
     private Arrumacao? arrumacao;
     private InputFile inputFile;

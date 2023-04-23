@@ -11,4 +11,10 @@ public static class Startup
 
         return services;
     }
+
+    public static IServiceCollection AddArrumaCaixasInterativas(this IServiceCollection services)
+    {
+        services.AddScoped<IOrganizacaoInterativa, OrganizacaoInterativa>();
+        return services;
+    }
 }

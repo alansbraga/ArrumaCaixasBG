@@ -6,7 +6,7 @@ namespace ArrumaCaixasBG.DadosCSV;
 
 internal class RepositorioPrateleiras : RepositorioCSV<Prateleira, PrateleiraInterna>, IRepositorioPrateleiras
 {
-    public RepositorioPrateleiras(IOptions<ConfiguracaoCSV> configuracao) : base(configuracao)
+    public RepositorioPrateleiras(IOptions<ConfiguracaoCSV> configuracao, IOrigemDados origem) : base(configuracao, origem)
     {
     }
 
@@ -24,6 +24,6 @@ internal class RepositorioPrateleiras : RepositorioCSV<Prateleira, PrateleiraInt
 
     protected override string NomeArquivo()
     {
-        return "Prateleiras.csv";
+        return Constantes.IdPrateleiras;
     }
 }

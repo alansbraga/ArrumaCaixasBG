@@ -1,0 +1,117 @@
+@page "/Organizar"
+@using ArrumaCaixasBG.DadosCSV
+@using System.Net.Http.Headers
+@inject IOrganizacaoInterativa organizador
+@inject IOrigemDados OrigemDados
+
+<RadzenRow>
+    <RadzenColumn Size="2">
+        <RadzenListBox @bind-Value=@solucoesSelecionadas Data=@solucoes TextProperty="Nome" 
+                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                       Multiple=true AllowClear=true Placeholder="Algoritmos" Style="width: 200px" />        
+        <InputFile OnChange="@SubiuPrateleiras" />
+        <RadzenListBox @bind-Value=@prateleirasSelecionadas Data=@prateleiras TextProperty="Nome" 
+                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                       Multiple=true AllowClear=true Placeholder="Prateleiras" Style="width: 200px" />        
+        <InputFile OnChange="@SubiuCaixas" />
+        <RadzenListBox @bind-Value=@caixasSelecionadas Data=@caixas TextProperty="Nome" 
+                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                       Multiple=true AllowClear=true Placeholder="Caixas" Style="width: 200px" />        
+    </RadzenColumn>
+    <RadzenColumn Size="10">
+        <RadzenRow>
+            <RadzenText Text=@(Mensagem) TextStyle="TextStyle.Caption"></RadzenText> 
+            <RadzenButton Click=@(a => OrganizarSelecionados(a))>Organizar Selecionados</RadzenButton>
+        </RadzenRow>
+        <RadzenRow>
+            <VisaoPrateleira Prateleiras=@prateleirasOrganizadas></VisaoPrateleira>
+        </RadzenRow>
+        
+    </RadzenColumn>
+</RadzenRow>
+@code {
+    private readonly List<Caixa> caixas = new List<Caixa>();
+    private List<Caixa> caixasSelecionadas = new List<Caixa>();
+    private List<Prateleira> prateleirasOrganizadas = new();
+
+    private readonly List<ISolucaoOrganizador> solucoes = new List<ISolucaoOrganizador>();
+    private List<ISolucaoOrganizador> solucoesSelecionadas = new List<ISolucaoOrganizador>();
+
+    private readonly List<Prateleira> prateleiras = new List<Prateleira>();
+    private List<Prateleira> prateleirasSelecionadas = new List<Prateleira>();
+    private readonly List<ResultadoOrganizacao> resultados = new();
+    private ResultadoOrganizacao? resultadoSelecionado = null;
+
+    public string Mensagem { get; set; } = string.Empty;
+    
+    private async Task SubiuCaixas(InputFileChangeEventArgs e)
+    {
+        var fileContent = 
+            new StreamContent(e.File.OpenReadStream());
+        
+        fileContent.Headers.ContentType = 
+            new MediaTypeHeaderValue(e.File.ContentType);
+        OrigemDados.DefineCaixas(await fileContent.ReadAsByteArrayAsync());
+        ArrumarTela();
+    }
+
+    private void ArrumarTela()
+    {
+        organizador.Iniciar();
+        caixas.Clear();
+        caixas.AddRange(organizador.CaixasDisponiveis());
+        caixasSelecionadas.Clear();
+        caixasSelecionadas.AddRange(caixas);
+        prateleiras.Clear();
+        prateleiras.AddRange(organizador.PrateleirasVazias());
+        prateleirasSelecionadas.Clear();
+        prateleirasSelecionadas.AddRange(prateleiras);
+        solucoes.Clear();
+        solucoes.AddRange(organizador.SolucoesDisponiveis());
+        solucoesSelecionadas.Clear();
+        solucoesSelecionadas.AddRange(solucoes);
+    }
+
+    private async Task SubiuPrateleiras(InputFileChangeEventArgs e)
+    {
+        var fileContent = 
+            new StreamContent(e.File.OpenReadStream());
+        
+        fileContent.Headers.ContentType = 
+            new MediaTypeHeaderValue(e.File.ContentType);
+        OrigemDados.DefinePrateleiras(await fileContent.ReadAsByteArrayAsync());
+        ArrumarTela();
+    }
+
+    private async Task OrganizarSelecionados(MouseEventArgs arg)
+    {
+        var source = new CancellationTokenSource();
+        var token = source.Token;
+        
+        resultados.Clear();
+        resultados.AddRange(await organizador
+            .OrganizarAsync(solucoesSelecionadas.ToArray(), 
+                prateleirasSelecionadas.ToArray(), 
+                caixasSelecionadas.ToArray(), s =>
+        {
+            Mensagem = s;
+            StateHasChanged();
+        }, token));
+        prateleirasOrganizadas.Clear();
+        var l = new List<Prateleira>();
+        foreach (var r in resultados)
+        {
+            foreach (var p in r.Prateleiras)
+            {
+                var perc = (1 - (p.VolumeNaoUtilizado / p.Volume));
+                p.Nome = $"{perc:P2} - {r.Descricao} - {p.Nome}";
+                l.Add(p);
+            }
+        }
+        prateleirasOrganizadas.AddRange(l.OrderByDescending(p => 1 - (p.VolumeNaoUtilizado / p.Volume)));
+
+        StateHasChanged();
+    }
+
+
+}

@@ -9,7 +9,7 @@
 </RadzenRow>
 <RadzenRow Style="width: 100%">
     <RadzenColumn Size="2">
-        <ListaCaixas @ref="lista" DadosTela=@dadosTela></ListaCaixas>
+        <ListaCaixas @ref="lista" Caixas=@dadosTela?.Caixas></ListaCaixas>
     </RadzenColumn>
     <RadzenColumn Size="10">
         <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela MudouSelecao=Mudou></Prateleira3D>

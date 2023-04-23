@@ -20,7 +20,9 @@ internal class SolucaoGerarXMLTodasDeUmaVEz : ISolucaoOrganizador
         this.configuracao = configuracao;
     }
 
-    public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
+    public string Nome { get; } = "XML Todas";
+
+    public ResultadoOrganizacao Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
         prateleiras.Add(new Prateleira()
         {
@@ -96,6 +98,6 @@ internal class SolucaoGerarXMLTodasDeUmaVEz : ISolucaoOrganizador
             : configuracao.Value.PastaImagem;
         File.WriteAllBytes(Path.Combine(caminho, $"Tudo.xinst"), stream.ToArray());
         
-        return new[] { prateleira };
+        return new ResultadoOrganizacao(Nome, new[] { prateleira }, Enumerable.Empty<Caixa>());
     }
 }

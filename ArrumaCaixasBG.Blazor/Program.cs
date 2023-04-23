@@ -14,5 +14,8 @@ builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
-
+builder.Services.AddDadosCSVWeb(builder.Configuration);
+builder.Services.AddArrumaCaixasInterativas();
+builder.Services.AddSolucoesComoCaixa();
+builder.Services.AddSolucoesSardine(builder.Configuration);
 await builder.Build().RunAsync();

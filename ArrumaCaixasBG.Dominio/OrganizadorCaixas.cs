@@ -32,7 +32,7 @@ internal class OrganizadorCaixas : IOrganizadorCaixas
             var prateleirasArrumadas = new List<Prateleira>();
             foreach (var prateleira in prateleiras)
             {
-                prateleirasArrumadas.AddRange(solucoes.SelectMany(s => s.Arrumar(caixas, prateleira)));
+                prateleirasArrumadas.AddRange(solucoes.SelectMany(s => s.Arrumar(caixas, prateleira).Prateleiras));
             }
             var maisOtimizada = prateleirasArrumadas
                 .OrderBy(p => p.Ordem)
@@ -44,11 +44,14 @@ internal class OrganizadorCaixas : IOrganizadorCaixas
         }
 
 
-        var resultado = new ResultadoOrganizacao(retorno, caixas)
-        {
-            Descricao = $"{DateTime.Now:yyyy-MM-dd hh-mm-ss}"
-        };
+        var resultado = new ResultadoOrganizacao($"{DateTime.Now:yyyy-MM-dd hh-mm-ss}", retorno, caixas);
         return resultado;
+    }
+
+    public ResultadoOrganizacao OrganizarParcialmente(IEnumerable<Prateleira> prateleiras, IEnumerable<Caixa> caixas,
+        ResultadoOrganizacao resultadoAtual)
+    {
+        throw new NotImplementedException();
     }
 
     private static void RemoverCaixasUsadas(Prateleira maisOtimizada, List<Caixa> caixas)

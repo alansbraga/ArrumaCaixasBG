@@ -11,14 +11,24 @@ using Microsoft.Extensions.Options;
 namespace ArrumaCaixasBG.SolucaoSardine;
 internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
 {
-    internal readonly Dictionary<int, Caixa> caixaComId = new();
-    private readonly IOptions<ConfiguracaoXML> configuracao;
+    private readonly Dictionary<int, Caixa> caixaComId = new();
+    //private readonly IOptions<ConfiguracaoXML> configuracao;
+    private readonly MethodType tipoMetodo;
+    private readonly Func<Instance, Configuration, IMethod> fabrica;
 
-    public SolucaoOrganizadorSardine(IOptions<ConfiguracaoXML> configuracao)
+    public SolucaoOrganizadorSardine(/*IOptions<ConfiguracaoXML> configuracao,*/
+        string nome,
+        MethodType tipoMetodo, Func<Instance, Configuration, IMethod> fabrica)
     {
-        this.configuracao = configuracao;
+        //this.configuracao = configuracao;
+        this.Nome = nome;
+        this.tipoMetodo = tipoMetodo;
+        this.fabrica = fabrica;
     }
-    public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
+
+    public string Nome { get; }
+
+    public ResultadoOrganizacao Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
         var retorno = new List<Prateleira>();
         var metodos = CrarMetodos(caixas, prateleira);
@@ -29,19 +39,19 @@ internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
             if (metodo.HasSolution)
             {
                 ConverteSolucao(prateleira, retorno, metodo.Solution);
-                var caminho = Path.Combine(configuracao.Value.PastaDestino, 
-                    @$"{prateleira.Nome}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss-fff}.xinst");
-                metodo.Solution.InstanceLinked.WriteXML(caminho);
+                //var caminho = Path.Combine(configuracao.Value.PastaDestino, 
+                //    @$"{prateleira.Nome}-{DateTime.Now:yyyy-MM-dd-hh-mm-ss-fff}.xinst");
+                //metodo.Solution.InstanceLinked.WriteXML(caminho);
             }
                 
         }
 
-        return retorno;
+        return new ResultadoOrganizacao(Nome, retorno, Enumerable.Empty<Caixa>());
     }
 
     private void ConverteSolucao(Prateleira prateleira, List<Prateleira> retorno, COSolution solution)
     {
-        if (solution == null)
+        if (solution is null)
             return;
 
         
@@ -87,9 +97,9 @@ internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
     {
         var lista = new List<IMethod>();
 
-        void CriaMetodo(MethodType tipoMetodo, Func<Instance, Configuration, IMethod> instancia)
+        void CriaMetodo(MethodType tipoMetodoLocal, Func<Instance, Configuration, IMethod> instancia)
         {
-            var cfg = new Configuration(tipoMetodo, true)
+            var cfg = new Configuration(tipoMetodoLocal, true)
             {
                 //SolverToUse = solver
             };
@@ -98,20 +108,7 @@ internal class SolucaoOrganizadorSardine : ISolucaoOrganizador
             lista.Add(metodo);
 
         }
-
-        //foreach (var solver in new[] { Solvers.Gurobi, Solvers.Cplex })
-        //{
-            CriaMetodo(MethodType.ExtremePointInsertion, 
-                (instance, cfg) => new ExtremePointInsertionHeuristic(instance, cfg));
-            //CriaMetodo(MethodType.ALNS, solver,
-            //    (instance, cfg) => new ALNS(instance, cfg));
-
-            CriaMetodo(MethodType.PushInsertion, 
-                (instance, cfg) => new PushInsertion(instance, cfg));
-            CriaMetodo(MethodType.SpaceDefragmentation, 
-                (instance, cfg) => new SpaceDefragmentationHeuristic(instance, cfg));
-        //}
-
+        CriaMetodo(tipoMetodo, fabrica);
 
         return lista;
     }

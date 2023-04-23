@@ -11,6 +11,9 @@
     <PackageReference Include="Radzen.Blazor" Version="4.9.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArrumaCaixasBG.DadosCSV\ArrumaCaixasBG.DadosCSV.csproj" />
     <ProjectReference Include="..\ArrumaCaixasBG.Dominio\ArrumaCaixasBG.Dominio.csproj" />
+    <ProjectReference Include="..\ArrumaCaixasBG.SolucaoCaixa\ArrumaCaixasBG.SolucaoCaixa.csproj" />
+    <ProjectReference Include="..\ArrumaCaixasBG.SolucaoSardine\ArrumaCaixasBG.SolucaoSardine.csproj" />
   </ItemGroup>
 </Project>

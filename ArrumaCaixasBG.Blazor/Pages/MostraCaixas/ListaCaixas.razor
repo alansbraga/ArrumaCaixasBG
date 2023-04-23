@@ -1,7 +1,7 @@
 @using ArrumaCaixasBG.Dominio
 
 
-<RadzenListBox @ref="lista" @bind-Value="Selecionado" Data=@DadosTela.Caixas 
+<RadzenListBox @ref="lista" @bind-Value="Selecionado" Data=@caixas
                AllowClear=true Placeholder="Caixas" Style="width: 100%; max-width: 200px; height: 400px">
     <Template>
         @{
@@ -18,20 +18,22 @@
 @code {
 
     [Parameter]
-    public DadosTela DadosTela
+    public IEnumerable<CaixaBlazor> Caixas
     {
-        get => dadosTela;
+        get => caixas.ToArray();
         set
         {
-            dadosTela = value;
+            caixas.Clear();
+            if (value is not null)
+                caixas.AddRange(value);
             StateHasChanged();
         }
     }
 
     private CaixaBlazor? Selecionado { get; set; }
     private RadzenListBox<CaixaBlazor?>? lista;
-    private DadosTela dadosTela;
-
+    private List<CaixaBlazor> caixas = new();
+    
     public void SelecionarItem(CaixaBlazor? caixa)
     {
         if (lista is not null)

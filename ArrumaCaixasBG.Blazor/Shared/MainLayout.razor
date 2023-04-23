@@ -1,8 +1,14 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-
+    
     <main>
+        <RadzenRow>
+            <RadzenMenu >
+                <RadzenMenuItem Text="Visualizar" Path="/" Icon="home"></RadzenMenuItem>
+                <RadzenMenuItem Text="Organizar" Path="Organizar" Icon="payment"></RadzenMenuItem>
+            </RadzenMenu>
+        </RadzenRow>
         <article class="content px-4">
             @Body
         </article>
