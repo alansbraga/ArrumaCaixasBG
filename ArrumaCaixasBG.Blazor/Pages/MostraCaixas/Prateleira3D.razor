@@ -57,7 +57,7 @@
     private Viewer visao = null!;
     private ViewerSettings settings = new ViewerSettings()
     {
-        ContainerId = "prateleira",
+        ContainerId = $"prateleira{Guid.NewGuid()}",
         CanSelect = true,
         CanSelectHelpers = false,
         SelectedColor = "black"

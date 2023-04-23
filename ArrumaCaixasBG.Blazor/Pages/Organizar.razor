@@ -1,8 +1,13 @@
 @page "/Organizar"
 @using ArrumaCaixasBG.DadosCSV
 @using System.Net.Http.Headers
+@using System.Text
+@using BlazorDownloadFile
+@using Newtonsoft.Json
 @inject IOrganizacaoInterativa organizador
 @inject IOrigemDados OrigemDados
+@inject DialogService DialogService
+@inject IBlazorDownloadFileService BlazorDownloadFileService
 
 <RadzenRow>
     <RadzenColumn Size="2">
@@ -20,19 +25,29 @@
     </RadzenColumn>
     <RadzenColumn Size="10">
         <RadzenRow>
-            <RadzenText Text=@(Mensagem) TextStyle="TextStyle.Caption"></RadzenText> 
-            <RadzenButton Click=@(a => OrganizarSelecionados(a))>Organizar Selecionados</RadzenButton>
+                <RadzenRadioButtonList @bind-Value=@visao TValue="int" >
+                    <Items>
+                        <RadzenRadioButtonListItem Text="Organizar" Value="1" />
+                        <RadzenRadioButtonListItem Text="Organizadas" Value="2" />
+                    </Items>
+                </RadzenRadioButtonList>
+        </RadzenRow>
+        <RadzenRow Visible=@(visao == 1) >
+            <RadzenButton Click=@(OrganizarSelecionados)>Organizar Selecionados</RadzenButton>
+            <RadzenButton Click=@(SelecionarPrateleira) Disabled=@(visaoSelecionar?.Prateleira is null)>Usar Organização</RadzenButton>
+        </RadzenRow>
+        <RadzenRow Visible=@(visao == 2)>
+            <RadzenButton Click=@Salvar>Gravar</RadzenButton>
         </RadzenRow>
         <RadzenRow>
-            <VisaoPrateleira Prateleiras=@prateleirasOrganizadas></VisaoPrateleira>
+            <VisaoPrateleira @ref="visaoSelecionar" Prateleiras=@(visao == 1 ? prateleirasParaSelecionar : organizador.PrateleirasOrganizadas())></VisaoPrateleira>
         </RadzenRow>
-        
     </RadzenColumn>
 </RadzenRow>
 @code {
     private readonly List<Caixa> caixas = new List<Caixa>();
     private List<Caixa> caixasSelecionadas = new List<Caixa>();
-    private List<Prateleira> prateleirasOrganizadas = new();
+    private readonly List<Prateleira> prateleirasParaSelecionar = new();
 
     private readonly List<ISolucaoOrganizador> solucoes = new List<ISolucaoOrganizador>();
     private List<ISolucaoOrganizador> solucoesSelecionadas = new List<ISolucaoOrganizador>();
@@ -40,10 +55,11 @@
     private readonly List<Prateleira> prateleiras = new List<Prateleira>();
     private List<Prateleira> prateleirasSelecionadas = new List<Prateleira>();
     private readonly List<ResultadoOrganizacao> resultados = new();
-    private ResultadoOrganizacao? resultadoSelecionado = null;
+    private VisaoPrateleira visaoSelecionar = null!;
+    private readonly Dictionary<string, string> descricoes = new();
+    private int visao = 1;
 
-    public string Mensagem { get; set; } = string.Empty;
-    
+
     private async Task SubiuCaixas(InputFileChangeEventArgs e)
     {
         var fileContent = 
@@ -52,12 +68,12 @@
         fileContent.Headers.ContentType = 
             new MediaTypeHeaderValue(e.File.ContentType);
         OrigemDados.DefineCaixas(await fileContent.ReadAsByteArrayAsync());
+        organizador.Iniciar();
         ArrumarTela();
     }
 
     private void ArrumarTela()
     {
-        organizador.Iniciar();
         caixas.Clear();
         caixas.AddRange(organizador.CaixasDisponiveis());
         caixasSelecionadas.Clear();
@@ -70,6 +86,8 @@
         solucoes.AddRange(organizador.SolucoesDisponiveis());
         solucoesSelecionadas.Clear();
         solucoesSelecionadas.AddRange(solucoes);
+        descricoes.Clear();
+        prateleirasParaSelecionar.Clear();
     }
 
     private async Task SubiuPrateleiras(InputFileChangeEventArgs e)
@@ -80,38 +98,90 @@
         fileContent.Headers.ContentType = 
             new MediaTypeHeaderValue(e.File.ContentType);
         OrigemDados.DefinePrateleiras(await fileContent.ReadAsByteArrayAsync());
+        organizador.Iniciar();
         ArrumarTela();
     }
 
     private async Task OrganizarSelecionados(MouseEventArgs arg)
     {
-        var source = new CancellationTokenSource();
-        var token = source.Token;
+        ShowBusyDialog();
+        try
+        {
+            var source = new CancellationTokenSource();
+            var token = source.Token;
         
-        resultados.Clear();
-        resultados.AddRange(await organizador
-            .OrganizarAsync(solucoesSelecionadas.ToArray(), 
-                prateleirasSelecionadas.ToArray(), 
-                caixasSelecionadas.ToArray(), s =>
-        {
-            Mensagem = s;
-            StateHasChanged();
-        }, token));
-        prateleirasOrganizadas.Clear();
-        var l = new List<Prateleira>();
-        foreach (var r in resultados)
-        {
-            foreach (var p in r.Prateleiras)
+            resultados.Clear();
+            var organizados = await organizador
+                .OrganizarAsync(solucoesSelecionadas.ToArray(), 
+                    prateleirasSelecionadas.ToArray(), 
+                    caixasSelecionadas.ToArray(),   
+                    token);
+            resultados.AddRange(organizados);
+        
+            prateleirasParaSelecionar.Clear();
+            var l = new List<Prateleira>();
+            foreach (var r in resultados)
             {
-                var perc = (1 - (p.VolumeNaoUtilizado / p.Volume));
-                p.Nome = $"{perc:P2} - {r.Descricao} - {p.Nome}";
-                l.Add(p);
-            }
-        }
-        prateleirasOrganizadas.AddRange(l.OrderByDescending(p => 1 - (p.VolumeNaoUtilizado / p.Volume)));
+                foreach (var p in r.Prateleiras)
+                {
+                    var perc = (1 - (p.VolumeNaoUtilizado / p.Volume));
+                    var nova = $"{perc:P2} - {r.Descricao} - {p.Nome}";
 
-        StateHasChanged();
+                    descricoes[nova] = p.Nome;
+                    p.Nome = nova;
+                    l.Add(p);
+                }
+            }
+            prateleirasParaSelecionar.AddRange(l.OrderByDescending(p => 1 - (p.VolumeNaoUtilizado / p.Volume)));
+
+        }
+        finally
+        {
+            DialogService.Close(); 
+            StateHasChanged();
+        }
     }
 
+    private Task SelecionarPrateleira(MouseEventArgs arg)
+    {
+        if (visaoSelecionar.Prateleira is null)
+            return Task.CompletedTask;
+        visaoSelecionar.Prateleira.Nome = descricoes[visaoSelecionar.Prateleira.Nome];
+        organizador.UsarPrateleira(visaoSelecionar.Prateleira);
+        ArrumarTela();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task Salvar(MouseEventArgs arg)
+    {
+        var nome = $"Arrumacao{DateTime.Now:yyyy-MM-dd-hh:mm:ss}.json";
+        var arrumacao = new Arrumacao()
+        {
+            Nome = nome,
+            Prateleiras = organizador.PrateleirasOrganizadas()
+        };
+        var str = System.Text.Json.JsonSerializer.Serialize(arrumacao);
+
+        BlazorDownloadFileService.DownloadFileFromText(nome, str, Encoding.Default, "text/json", false);
+        return Task.CompletedTask;
+    }
+    
+    async Task ShowBusyDialog()
+    {
+        await BusyDialog();
+    }
+
+    async Task BusyDialog()
+    {
+        await DialogService.OpenAsync("", ds =>
+            @<div>
+                <div class="row">
+                    <div class="col-md-12">
+                        Processando...
+                    </div>
+                </div>
+            </div>, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto" });
+    }
 
 }

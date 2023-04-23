@@ -1,4 +1,5 @@
 @using ArrumaCaixasBG.Dominio
+@using Blazor3D.Core
 @inject CaixasTelaServico Servico
 
 <RadzenRow AlignItems="AlignItems.Center" Style="width: 100%">
@@ -30,7 +31,7 @@
         }
     }
 
-    private Prateleira? Prateleira
+    public Prateleira? Prateleira
     {
         get => prateleira;
         set
@@ -46,6 +47,15 @@
     {
         if (this.Prateleira is not null)
             dadosTela = Servico.Transforma(this.Prateleira);
+        else
+        {
+            dadosTela = new DadosTela()
+            {
+                Adicionais = Enumerable.Empty<Object3D>(),
+                Caixas = Enumerable.Empty<CaixaBlazor>(),
+                Camera = new PerspectiveCamera()
+            };
+        }
     }
 
     private DadosTela? dadosTela;

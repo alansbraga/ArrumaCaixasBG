@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ArrumaCaixasBG.Blazor;
 using ArrumaCaixasBG.Blazor.Codigo;
+using BlazorDownloadFile;
 using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -18,4 +19,5 @@ builder.Services.AddDadosCSVWeb(builder.Configuration);
 builder.Services.AddArrumaCaixasInterativas();
 builder.Services.AddSolucoesComoCaixa();
 builder.Services.AddSolucoesSardine(builder.Configuration);
+builder.Services.AddBlazorDownloadFile(ServiceLifetime.Scoped);
 await builder.Build().RunAsync();

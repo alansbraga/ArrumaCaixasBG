@@ -9,7 +9,9 @@ public class OrganizacaoInterativa : IOrganizacaoInterativa
     private readonly IEnumerable<ISolucaoOrganizador> solucoes;
     private readonly List<Caixa> caixas = new();
     private readonly List<Prateleira> prateleiras = new();
-  
+
+    private readonly List<Prateleira> organizadas = new();
+
 
     public OrganizacaoInterativa(
         IRepositorioCaixas repositorioCaixas,
@@ -35,6 +37,11 @@ public class OrganizacaoInterativa : IOrganizacaoInterativa
         return solucoes.ToArray();
     }
 
+    public IEnumerable<Prateleira> PrateleirasOrganizadas()
+    {
+        return organizadas.ToArray();
+    }
+
     public void Iniciar()
     {
         caixas.Clear();
@@ -48,11 +55,9 @@ public class OrganizacaoInterativa : IOrganizacaoInterativa
         IEnumerable<ISolucaoOrganizador> solucoesLocal,
         IEnumerable<Prateleira> prateleirasLocal,
         IEnumerable<Caixa> caixasLocal,
-        Action<string> progresso,
         CancellationToken cancellationToken)
     {
-        var retorno = new List<ResultadoOrganizacao>();
-        var tasks = new List<Task<ResultadoOrganizacao>();
+        var tasks = new List<Task<ResultadoOrganizacao>>();
         foreach (var prateleira in prateleirasLocal)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -61,16 +66,24 @@ public class OrganizacaoInterativa : IOrganizacaoInterativa
             {
                 if (cancellationToken.IsCancellationRequested)
                     break;
-                tasks.Add(Task.Run(() =>
-                {
-                    return organizador.Arrumar(caixasLocal.ToArray(), prateleira);
-                }));
+                tasks.Add(Task.Run(() => organizador.Arrumar(caixasLocal.ToArray(), prateleira), cancellationToken));
             }
         }
 
         await Task.WhenAll(tasks);
-        retorno.AddRange(tasks.Select(t => t.Result));
-        
-        return retorno;
+        return tasks
+            .Select(t => t.Result)
+            .ToArray();
+    }
+
+    public void UsarPrateleira(Prateleira prateleira)
+    {
+        var organizada = prateleiras.Single(p => p.Equals(prateleira));
+        prateleiras.Remove(organizada);
+        foreach (var caixa in prateleira.Caixas)
+        {
+            caixas.Remove(caixas.Single(c => c.Equals(caixa)));
+        }
+        organizadas.Add(prateleira);
     }
 }
