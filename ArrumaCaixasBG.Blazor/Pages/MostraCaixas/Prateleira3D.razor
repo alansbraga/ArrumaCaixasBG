@@ -1,0 +1,96 @@
+<Viewer @ref="visao" ViewerSettings=@settings Scene=scene Camera=camera />
+
+@code {
+
+    [Parameter]
+    public DadosTela? DadosTela
+    {
+        get => dadosTela;
+        set
+        {
+            if (dadosTela == value)
+                return;
+            dadosTela = value;
+            CriaCena();
+        }
+    }
+
+    private void CriaCena()
+    {
+        visao?.ClearSceneAsync();
+        if (DadosTela is null)
+            return;
+        
+        foreach (var item in DadosTela.Adicionais)
+        {
+            scene.Add(item);
+        }
+        foreach (var c in DadosTela.Caixas)
+        {
+            c.MudouVer += MudouVer;
+            scene.Add(c.Objeto3D);
+        }
+        camera = this.DadosTela.Camera;
+        visao?.UpdateScene();
+        visao?.UpdateCamera(camera);
+        StateHasChanged();
+    }
+
+    private async Task MudouVer(CaixaBlazor caixa, bool novoValor)
+    {
+        if (novoValor)
+        {
+            scene.Add(caixa.Objeto3D);
+        }
+        else
+        {
+            await visao.RemoveByUuidAsync(caixa.Objeto3D.Uuid);
+        }
+        await visao.UpdateScene();
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public EventCallback<CaixaBlazor?> MudouSelecao { get; set; }
+
+    public CaixaBlazor? Selecionado { get; private set; } = null;
+    private Viewer visao = null!;
+    private ViewerSettings settings = new ViewerSettings()
+    {
+        ContainerId = $"prateleira{Guid.NewGuid()}",
+        CanSelect = true,
+        CanSelectHelpers = false,
+        SelectedColor = "black"
+    };
+
+    private Scene scene = new Scene();
+    private Camera camera = new PerspectiveCamera();
+    private DadosTela? dadosTela;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            visao.ObjectSelected += OnObjectSelected;
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    private void OnObjectSelected(Object3DArgs e)
+    {
+        CaixaBlazor? caixa = null;
+        if (DadosTela is not null)
+        {
+            caixa = DadosTela
+                .Caixas
+                .SingleOrDefault(c => c.Objeto3D.Uuid == e.UUID);
+        }
+        Selecionado = caixa;
+        MudouSelecao.InvokeAsync(Selecionado)
+            .GetAwaiter()
+            .GetResult();
+        StateHasChanged();
+    }
+
+}

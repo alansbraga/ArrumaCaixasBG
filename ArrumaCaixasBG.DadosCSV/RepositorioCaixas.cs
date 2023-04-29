@@ -6,7 +6,7 @@ namespace ArrumaCaixasBG.DadosCSV;
 
 internal class RepositorioCaixas : RepositorioCSV<Caixa, CaixaInterna>, IRepositorioCaixas
 {
-    public RepositorioCaixas(IOptions<ConfiguracaoCSV> configuracao) : base(configuracao)
+    public RepositorioCaixas(IOptions<ConfiguracaoCSV> configuracao, IOrigemDados origem) : base(configuracao, origem)
     {
     }
 
@@ -24,6 +24,6 @@ internal class RepositorioCaixas : RepositorioCSV<Caixa, CaixaInterna>, IReposit
 
     protected override string NomeArquivo()
     {
-        return "Caixas.csv";
+        return Constantes.IdCaixas;
     }
 }

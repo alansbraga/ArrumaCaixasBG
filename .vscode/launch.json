@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch and Debug",
+            "type": "blazorwasm",
+            "request": "launch",
+            "url": "http://localhost:5143",
+            "cwd": "${workspaceFolder}/ArrumaCaixasBG.Blazor"
+        },
+        {
             // Use IntelliSense to find out which attributes exist for C# debugging
             // Use hover for the description of the existing attributes
             // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
@@ -10,9 +17,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ArrumaCaixasBG/bin/Debug/net6.0/ArrumaCaixasBG.dll",
+            "program": "${workspaceFolder}/ArrumaCaixasBG.Blazor/bin/Debug/net7.0/ArrumaCaixasBG.Blazor.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/ArrumaCaixasBG",
+            "cwd": "${workspaceFolder}/ArrumaCaixasBG.Blazor",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
@@ -21,6 +28,28 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
+        },
+        {
+            "name": ".NET Core Launch (Blazor Standalone)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "dotnet",
+            "args": [
+                "run"
+            ],
+            "cwd": "${workspaceFolder}/ArrumaCaixasBG.Blazor",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": ".NET Core Debug Blazor Web Assembly",
+            "type": "msedge",
+            "request": "launch",
+            "timeout": 30000,
+            "url": "http://localhost:5143",
+            "webRoot": "${workspaceFolder}/ArrumaCaixasBG.Blazor",
+            "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
         }
     ]
 }

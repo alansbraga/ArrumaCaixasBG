@@ -19,7 +19,10 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
     {
         this.configuracao = configuracao;
     }
-    public IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
+
+    public string Nome { get; } = "XML";
+
+    public ResultadoOrganizacao Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira)
     {
         var instance = new Instance
         {
@@ -94,9 +97,8 @@ internal class SolucaoGerarXML : ISolucaoOrganizador
             Thread.Sleep(1000);
         }
 
-        
-
-        return CriaPrateleiras(prateleira, arquivoDepois);
+        var arrumadas = CriaPrateleiras(prateleira, arquivoDepois);
+        return new ResultadoOrganizacao(Nome, arrumadas, Enumerable.Empty<Caixa>());
     }
 
     private IEnumerable<Prateleira> CriaPrateleiras(Prateleira prateleira, string arquivoDepois)

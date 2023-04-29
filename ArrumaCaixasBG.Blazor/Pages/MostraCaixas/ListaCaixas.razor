@@ -1,0 +1,43 @@
+@using ArrumaCaixasBG.Dominio
+
+
+<RadzenListBox @ref="lista" @bind-Value="Selecionado" Data=@caixas
+               AllowClear=true Placeholder="Caixas" Style="width: 100%; max-width: 200px; height: 400px">
+    <Template>
+        @{
+            var atual = (context as CaixaBlazor) ?? throw new Exception("não vai ser nulo");
+        }
+        <RadzenCheckBox TValue="bool" @bind-Value=@atual.Ver />
+        <RadzenText TextStyle="TextStyle.Caption">@atual.Nome</RadzenText>
+        <br/>
+        <button style="background-color: @atual.Cor; width: 100%; height: 1em;"></button>
+    </Template>    
+</RadzenListBox>
+
+
+@code {
+
+    [Parameter]
+    public IEnumerable<CaixaBlazor> Caixas
+    {
+        get => caixas.ToArray();
+        set
+        {
+            caixas.Clear();
+            if (value is not null)
+                caixas.AddRange(value);
+            StateHasChanged();
+        }
+    }
+
+    private CaixaBlazor? Selecionado { get; set; }
+    private RadzenListBox<CaixaBlazor?>? lista;
+    private List<CaixaBlazor> caixas = new();
+    
+    public void SelecionarItem(CaixaBlazor? caixa)
+    {
+        if (lista is not null)
+            Selecionado = caixa;
+        StateHasChanged();
+    }
+}

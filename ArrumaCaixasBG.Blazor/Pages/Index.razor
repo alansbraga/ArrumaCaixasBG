@@ -1,0 +1,41 @@
+﻿@page "/"
+@using ArrumaCaixasBG.Dominio
+@using System.Net.Http.Headers
+
+<RadzenRow Style="width: 100%">
+    <InputFile @ref="inputFile" OnChange="@SubiuArquivo" />
+</RadzenRow>
+<RadzenRow>
+    <VisaoPrateleira Prateleiras=@prateleiras></VisaoPrateleira>
+</RadzenRow>
+
+@code
+{
+    private IEnumerable<Prateleira> prateleiras = Array.Empty<Prateleira>(); //new []{ Uteis.Prateleira() };
+    private string conteudo;
+    private Arrumacao? arrumacao;
+    private InputFile inputFile;
+
+    private string Conteudo
+    {
+        get => conteudo;
+        set
+        {
+            conteudo = value;
+            arrumacao = Uteis.CriaArrumacao(conteudo);
+            if (arrumacao is not null)
+                prateleiras = arrumacao.Prateleiras;
+        }
+    }
+
+    private async Task SubiuArquivo(InputFileChangeEventArgs e)
+    {
+        var fileContent = 
+            new StreamContent(e.File.OpenReadStream());
+
+        fileContent.Headers.ContentType = 
+            new MediaTypeHeaderValue(e.File.ContentType);
+        Conteudo = await fileContent.ReadAsStringAsync();
+
+    }
+}

@@ -2,6 +2,7 @@
 
 public interface ISolucaoOrganizador
 {
-    IEnumerable<Prateleira> Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira);
+    string Nome { get; }
+    ResultadoOrganizacao Arrumar(IEnumerable<Caixa> caixas, Prateleira prateleira);
 }
 

@@ -9,10 +9,12 @@ namespace ArrumaCaixasBG.DadosCSV;
 internal abstract class RepositorioCSV<T, TInterno> : IRepositorio<T>
 {
     private readonly IOptions<ConfiguracaoCSV> configuracao;
+    private readonly IOrigemDados origemDados;
 
-    protected RepositorioCSV(IOptions<ConfiguracaoCSV> configuracao)
+    protected RepositorioCSV(IOptions<ConfiguracaoCSV> configuracao, IOrigemDados origemDados)
     {
         this.configuracao = configuracao;
+        this.origemDados = origemDados;
     }
 
     protected abstract string NomeArquivo();
@@ -22,7 +24,8 @@ internal abstract class RepositorioCSV<T, TInterno> : IRepositorio<T>
     public IEnumerable<T> LerTodos()
     {
         var cultura = CultureInfo.GetCultureInfo(configuracao.Value.FormatoDados);
-        using var reader = new StreamReader(Path.Combine(configuracao.Value.PastaDados, NomeArquivo()));
+        using var stream = origemDados.LerDados(NomeArquivo());
+        using var reader = new StreamReader(stream);
         using var csv = new CsvReader(reader, new CsvConfiguration(cultura)
         {
             Delimiter = configuracao.Value.Separador

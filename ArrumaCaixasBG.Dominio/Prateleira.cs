@@ -19,7 +19,10 @@ public class Prateleira : IEquatable<Prateleira>
 
     public decimal Volume => Altura * Largura * Profundidade;
     public decimal VolumeNaoUtilizado => Volume - caixas.Sum(c => c.Volume);
-    public IEnumerable<CaixaArrumada> Caixas => caixas.ToArray();
+    public IEnumerable<CaixaArrumada> Caixas {
+        get => caixas.ToArray();
+        set => SubstituiCaixas(value);
+    }
 
     public void SubstituiCaixas(IEnumerable<CaixaArrumada> novasCaixas)
     {

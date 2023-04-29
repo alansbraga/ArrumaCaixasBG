@@ -1,0 +1,73 @@
+@using ArrumaCaixasBG.Dominio
+@using Blazor3D.Core
+@inject CaixasTelaServico Servico
+
+<RadzenRow AlignItems="AlignItems.Center" Style="width: 100%">
+    <RadzenDropDown TValue="Prateleira" @bind-Value=@Prateleira  Data=@prateleiras TextProperty="Nome" Style="width: 100%" ></RadzenDropDown>
+</RadzenRow>
+<RadzenRow Style="width: 100%">
+   <RadzenText Text=@(prateleira3d?.Selecionado?.Nome ?? "Nenhuma caixa selecionada") TextStyle="TextStyle.Caption"></RadzenText> 
+</RadzenRow>
+<RadzenRow Style="width: 100%">
+    <RadzenColumn Size="2">
+        <ListaCaixas @ref="lista" Caixas=@dadosTela?.Caixas></ListaCaixas>
+    </RadzenColumn>
+    <RadzenColumn Size="10">
+        <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela MudouSelecao=Mudou></Prateleira3D>
+    </RadzenColumn>
+</RadzenRow>
+@code {
+
+    private List<Prateleira> prateleiras = new();
+    [Parameter]
+    public IEnumerable<Prateleira> Prateleiras
+    {
+        get => prateleiras.ToArray();
+        set 
+        {
+            prateleiras.Clear();
+            prateleiras.AddRange(value);
+            Prateleira = prateleiras.FirstOrDefault();
+        }
+    }
+
+    public Prateleira? Prateleira
+    {
+        get => prateleira;
+        set
+        {
+            if (prateleira == value)
+                return;
+            prateleira = value;
+            CriaDadosTela();
+        }
+    }
+
+    private void CriaDadosTela()
+    {
+        if (this.Prateleira is not null)
+            dadosTela = Servico.Transforma(this.Prateleira);
+        else
+        {
+            dadosTela = new DadosTela()
+            {
+                Adicionais = Enumerable.Empty<Object3D>(),
+                Caixas = Enumerable.Empty<CaixaBlazor>(),
+                Camera = new PerspectiveCamera()
+            };
+        }
+    }
+
+    private DadosTela? dadosTela;
+    private Prateleira3D? prateleira3d;
+    private ListaCaixas? lista;
+    private Prateleira? prateleira;
+
+    private Task Mudou(CaixaBlazor? caixa)
+    {
+        lista?.SelecionarItem(caixa);
+
+        return Task.CompletedTask;
+    }
+
+}
