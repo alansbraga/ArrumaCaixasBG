@@ -6,13 +6,16 @@
     <RadzenDropDown TValue="Prateleira" @bind-Value=@Prateleira  Data=@prateleiras TextProperty="Nome" Style="width: 100%" ></RadzenDropDown>
 </RadzenRow>
 <RadzenRow Style="width: 100%">
-   <RadzenText Text=@(prateleira3d?.Selecionado?.Nome ?? "Nenhuma caixa selecionada") TextStyle="TextStyle.Caption"></RadzenText> 
-</RadzenRow>
-<RadzenRow Style="width: 100%">
     <RadzenColumn Size="2">
+        <RadzenRow Style="width: 100%">
+           <RadzenText Text="Caixas" TextStyle="TextStyle.Caption"></RadzenText> 
+        </RadzenRow>
         <ListaCaixas @ref="lista" Caixas=@dadosTela?.Caixas></ListaCaixas>
     </RadzenColumn>
     <RadzenColumn Size="10">
+        <RadzenRow Style="width: 100%">
+           <RadzenText Text=@(prateleira3d?.Selecionado?.Nome ?? "Nenhuma caixa selecionada") TextStyle="TextStyle.Caption"></RadzenText> 
+        </RadzenRow>
         <Prateleira3D @ref="prateleira3d" DadosTela=@dadosTela MudouSelecao=Mudou></Prateleira3D>
     </RadzenColumn>
 </RadzenRow>
