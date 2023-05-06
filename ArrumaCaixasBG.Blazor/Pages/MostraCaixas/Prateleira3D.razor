@@ -15,38 +15,48 @@
         }
     }
 
-    private void CriaCena()
+    private async Task CriaCena()
     {
-        visao?.ClearSceneAsync();
+        if (visao is null)
+            return;
+        await visao.ClearSceneAsync();
         if (DadosTela is null)
             return;
         
+
+        AtualizaCaixas();
+        camera = this.DadosTela.Camera;
+        await visao.UpdateScene();
+        await visao.UpdateCamera(camera);
+        StateHasChanged();
+    }
+
+    private void AtualizaCaixas()
+    {
+
+        if (DadosTela is null)
+            return;
+        scene.Children.Clear();
         foreach (var item in DadosTela.Adicionais)
         {
             scene.Add(item);
         }
+
         foreach (var c in DadosTela.Caixas)
         {
+            c.MudouVer -= MudouVer;
             c.MudouVer += MudouVer;
-            scene.Add(c.Objeto3D);
+            if (c.Ver)
+                scene.Add(c.Objeto3D);
         }
-        camera = this.DadosTela.Camera;
-        visao?.UpdateScene();
-        visao?.UpdateCamera(camera);
-        StateHasChanged();
+
     }
 
     private async Task MudouVer(CaixaBlazor caixa, bool novoValor)
     {
-        if (novoValor)
-        {
-            scene.Add(caixa.Objeto3D);
-        }
-        else
-        {
-            await visao.RemoveByUuidAsync(caixa.Objeto3D.Uuid);
-        }
-        await visao.UpdateScene();
+        AtualizaCaixas();
+        if (visao is not null)
+            await visao.UpdateScene();
         StateHasChanged();
     }
 
@@ -54,10 +64,10 @@
     public EventCallback<CaixaBlazor?> MudouSelecao { get; set; }
 
     public CaixaBlazor? Selecionado { get; private set; } = null;
-    private Viewer visao = null!;
+    private Viewer? visao = null!;
     private ViewerSettings settings = new ViewerSettings()
     {
-        ContainerId = $"prateleira{Guid.NewGuid()}",
+        ContainerId = $"prateleira",
         CanSelect = true,
         CanSelectHelpers = false,
         SelectedColor = "black"
