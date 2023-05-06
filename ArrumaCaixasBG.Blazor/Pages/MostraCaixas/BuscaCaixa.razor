@@ -1,0 +1,49 @@
+
+<RadzenListBox @bind-Value="Selecionado" Data=@caixas
+               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+               AllowClear=true Placeholder="Caixas" Style="width: 100%;  height: 400px"
+               >
+</RadzenListBox>
+
+@code {
+    
+    private List<Prateleira> prateleiras = new();
+    private List<CaixaComPrateleira> caixas = new();
+    private CaixaComPrateleira? sel = null;
+
+    [Parameter]
+    public IEnumerable<Prateleira> Prateleiras
+    {
+        get => prateleiras.ToArray();
+        set 
+        {
+            prateleiras.Clear();
+            prateleiras.AddRange(value);
+            CriaCaixas();
+        }
+    }
+
+    [Parameter]
+    public CaixaComPrateleira? Selecionado
+    {
+        get => sel; 
+        set 
+        {
+            sel = value;
+            SelecionadoChanged.InvokeAsync(sel);
+        }
+    }
+    [Parameter]
+    public EventCallback<CaixaComPrateleira?> SelecionadoChanged { get; set; }
+
+
+    private void CriaCaixas()
+    {
+        caixas.Clear();
+        caixas.AddRange(prateleiras
+            .SelectMany(prateleira => prateleira.Caixas,
+                ((prateleira, arrumada) => new CaixaComPrateleira(arrumada, prateleira)))
+            .OrderBy(c =>c.Caixa.Nome));
+    }
+
+}

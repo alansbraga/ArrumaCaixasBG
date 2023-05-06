@@ -1,9 +1,15 @@
 @using ArrumaCaixasBG.Dominio
 @using Blazor3D.Core
 @inject CaixasTelaServico Servico
+@inject DialogService DialogService
 
 <RadzenRow AlignItems="AlignItems.Center" Style="width: 100%">
-    <RadzenDropDown TValue="Prateleira" @bind-Value=@Prateleira  Data=@prateleiras TextProperty="Nome" Style="width: 100%" ></RadzenDropDown>
+    <RadzenColumn Size="11">
+        <RadzenDropDown TValue="Prateleira" @bind-Value=@Prateleira Data=@prateleiras TextProperty="Nome" Style="width: 100%"></RadzenDropDown>
+    </RadzenColumn>
+    <RadzenColumn Size="1">
+        <RadzenButton Click=@(args => Pesquisar()) Icon="explore" ButtonStyle="ButtonStyle.Primary"/>
+    </RadzenColumn>
 </RadzenRow>
 <RadzenRow Style="width: 100%">
     <RadzenColumn Size="2">
@@ -71,6 +77,29 @@
         lista?.SelecionarItem(caixa);
 
         return Task.CompletedTask;
+    }
+
+    private async Task Pesquisar()
+    {
+        CaixaComPrateleira? selecionada = null;
+
+        void Selecionou(DialogService ds)
+        {
+            if (selecionada is not null)
+                Prateleira = selecionada.Prateleira;
+            ds.Close(true);
+        }
+        
+        var result = await DialogService.OpenAsync("Procurar Caixa", ds =>
+            @<RadzenStack Gap="1.5rem">
+                <BuscaCaixa Prateleiras="prateleiras" @bind-Selecionado="selecionada"></BuscaCaixa>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                            <RadzenButton Text="Selecionar" Click="() => Selecionou(ds)" Style="width: 200px;"/>
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenStack>);
+        
     }
 
 }
