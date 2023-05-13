@@ -1,0 +1,71 @@
+@using System.Net.Http.Headers
+@using ArrumaCaixasBG.Blazor.Codigo
+
+<h3>Início da Organização</h3>
+
+<RadzenRow>
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenLabel> Selecione o arquivo com as praterleiras</RadzenLabel>
+        <RadzenLabel>Colunas necessárias: Nome, Altura, Largura , Profundidade, Ordem</RadzenLabel>
+        <RadzenRow>
+            <InputFile OnChange="@SubiuPrateleiras" />
+        </RadzenRow>
+    </RadzenStack>
+</RadzenRow>
+<RadzenRow>
+    <RadzenStack>
+        <RadzenLabel>Selecione o arquivo com as caixas</RadzenLabel>
+        <RadzenLabel>Colunas necessárias: Nome, Comprimento, Largura, Altura, Peso</RadzenLabel>
+        <RadzenRow>
+            <InputFile OnChange="@SubiuCaixas" />
+        </RadzenRow>
+    </RadzenStack>
+</RadzenRow>
+<RadzenRow RowGap="2" AlignItems="AlignItems.Center">
+    <RadzenColumn Size="12">
+        <RadzenLabel> </RadzenLabel>
+        <RadzenButton Click="ClicouIniciou">Iniciar Organização</RadzenButton>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+
+    [Parameter] 
+    public EventCallback<InicioOrganizacao> InicioRequisitado { get; set; }
+
+    public Action<byte[], byte[]> Iniciou;
+
+    private byte[] prateleiras = Array.Empty<byte>();
+    private byte[] caixas = Array.Empty<byte>();
+    
+    private async Task SubiuPrateleiras(InputFileChangeEventArgs e)
+    {
+        var fileContent = 
+            new StreamContent(e.File.OpenReadStream());
+        
+        fileContent.Headers.ContentType = 
+            new MediaTypeHeaderValue(e.File.ContentType);
+        prateleiras = await fileContent.ReadAsByteArrayAsync();
+    }
+    
+    private async Task SubiuCaixas(InputFileChangeEventArgs e)
+    {
+        var fileContent = 
+            new StreamContent(e.File.OpenReadStream());
+        
+        fileContent.Headers.ContentType = 
+            new MediaTypeHeaderValue(e.File.ContentType);
+        
+        caixas = await fileContent.ReadAsByteArrayAsync();
+    }
+
+    private async Task ClicouIniciou(MouseEventArgs arg)
+    {
+        await InicioRequisitado.InvokeAsync(new InicioOrganizacao()
+        {
+            Caixas = caixas,
+            Prateleiras = prateleiras
+        });
+    }
+
+}

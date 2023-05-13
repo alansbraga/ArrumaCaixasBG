@@ -3,25 +3,27 @@
 @using System.Net.Http.Headers
 @using System.Text
 @using BlazorDownloadFile
-@using Newtonsoft.Json
 @inject IOrganizacaoInterativa organizador
 @inject IOrigemDados OrigemDados
 @inject DialogService DialogService
 @inject IBlazorDownloadFileService BlazorDownloadFileService
 
-<RadzenRow>
+<RadzenRow Visible=@(!inicou)>
+    <RadzenColumn Size="12">
+        <OrganizacaoInicio InicioRequisitado="InicioRequisitado"></OrganizacaoInicio>
+    </RadzenColumn>
+</RadzenRow>
+<RadzenRow Visible=@inicou >
     <RadzenColumn Size="2">
-        <RadzenListBox @bind-Value=@solucoesSelecionadas Data=@solucoes TextProperty="Nome" 
-                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                       Multiple=true AllowClear=true Placeholder="Algoritmos" Style="width: 200px" />        
-        <InputFile OnChange="@SubiuPrateleiras" />
         <RadzenListBox @bind-Value=@prateleirasSelecionadas Data=@prateleiras TextProperty="Nome" 
                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
                        Multiple=true AllowClear=true Placeholder="Prateleiras" Style="width: 200px" />        
-        <InputFile OnChange="@SubiuCaixas" />
         <RadzenListBox @bind-Value=@caixasSelecionadas Data=@caixas TextProperty="Nome" 
                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
                        Multiple=true AllowClear=true Placeholder="Caixas" Style="width: 200px" />        
+        <RadzenListBox @bind-Value=@solucoesSelecionadas Data=@solucoes TextProperty="Nome" 
+                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                       Multiple=true AllowClear=true Placeholder="Algoritmos" Style="width: 200px" />        
     </RadzenColumn>
     <RadzenColumn Size="10">
         <RadzenRow>
@@ -58,19 +60,8 @@
     private VisaoPrateleira visaoSelecionar = null!;
     private readonly Dictionary<string, string> descricoes = new();
     private int visao = 1;
+    private bool inicou = false;
 
-
-    private async Task SubiuCaixas(InputFileChangeEventArgs e)
-    {
-        var fileContent = 
-            new StreamContent(e.File.OpenReadStream());
-        
-        fileContent.Headers.ContentType = 
-            new MediaTypeHeaderValue(e.File.ContentType);
-        OrigemDados.DefineCaixas(await fileContent.ReadAsByteArrayAsync());
-        organizador.Iniciar();
-        ArrumarTela();
-    }
 
     private void ArrumarTela()
     {
@@ -88,18 +79,6 @@
         solucoesSelecionadas.AddRange(solucoes);
         descricoes.Clear();
         prateleirasParaSelecionar.Clear();
-    }
-
-    private async Task SubiuPrateleiras(InputFileChangeEventArgs e)
-    {
-        var fileContent = 
-            new StreamContent(e.File.OpenReadStream());
-        
-        fileContent.Headers.ContentType = 
-            new MediaTypeHeaderValue(e.File.ContentType);
-        OrigemDados.DefinePrateleiras(await fileContent.ReadAsByteArrayAsync());
-        organizador.Iniciar();
-        ArrumarTela();
     }
 
     private async Task OrganizarSelecionados(MouseEventArgs arg)
@@ -184,4 +163,22 @@
             </div>, new DialogOptions() { ShowTitle = false, Style = "min-height:auto;min-width:auto;width:auto" });
     }
 
+    private Task InicioRequisitado(InicioOrganizacao arg)
+    {
+        try
+        {
+            ShowBusyDialog();
+            OrigemDados.DefineCaixas(arg.Caixas);
+            OrigemDados.DefinePrateleiras(arg.Prateleiras);
+            organizador.Iniciar();
+            inicou = true;
+            ArrumarTela();
+        }
+        finally
+        {
+            DialogService.Close();
+        }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 }
