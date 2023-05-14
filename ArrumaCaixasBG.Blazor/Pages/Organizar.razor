@@ -13,38 +13,45 @@
         <OrganizacaoInicio InicioRequisitado="InicioRequisitado"></OrganizacaoInicio>
     </RadzenColumn>
 </RadzenRow>
-<RadzenRow Visible=@inicou >
-    <RadzenColumn Size="2">
-        <RadzenListBox @bind-Value=@prateleirasSelecionadas Data=@prateleiras TextProperty="Nome" 
-                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                       Multiple=true AllowClear=true Placeholder="Prateleiras" Style="width: 200px" />        
-        <RadzenListBox @bind-Value=@caixasSelecionadas Data=@caixas TextProperty="Nome" 
-                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                       Multiple=true AllowClear=true Placeholder="Caixas" Style="width: 200px" />        
-        <RadzenListBox @bind-Value=@solucoesSelecionadas Data=@solucoes TextProperty="Nome" 
-                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                       Multiple=true AllowClear=true Placeholder="Algoritmos" Style="width: 200px" />        
-    </RadzenColumn>
-    <RadzenColumn Size="10">
-        <RadzenRow>
-                <RadzenRadioButtonList @bind-Value=@visao TValue="int" >
-                    <Items>
-                        <RadzenRadioButtonListItem Text="Organizar" Value="1" />
-                        <RadzenRadioButtonListItem Text="Organizadas" Value="2" />
-                    </Items>
-                </RadzenRadioButtonList>
-        </RadzenRow>
-        <RadzenRow Visible=@(visao == 1) >
-            <RadzenButton Click=@(OrganizarSelecionados)>Organizar Selecionados</RadzenButton>
-            <RadzenButton Click=@(SelecionarPrateleira) Disabled=@(visaoSelecionar?.Prateleira is null)>Usar Organização</RadzenButton>
-        </RadzenRow>
-        <RadzenRow Visible=@(visao == 2)>
-            <RadzenButton Click=@Salvar>Gravar</RadzenButton>
-        </RadzenRow>
-        <RadzenRow>
-            <VisaoPrateleira @ref="visaoSelecionar" Prateleiras=@(visao == 1 ? prateleirasParaSelecionar : organizador.PrateleirasOrganizadas())></VisaoPrateleira>
-        </RadzenRow>
-    </RadzenColumn>
+<RadzenRow Visible=@inicou>
+    <RadzenSplitter Orientation="Orientation.Horizontal">
+        <RadzenSplitterPane Min="17%" Size="17%">
+            
+            <RadzenListBox @bind-Value=@prateleirasSelecionadas Data=@prateleiras TextProperty="Nome"
+                           FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                           Multiple=true AllowClear=true Placeholder="Prateleiras" Style="width: 100%"/>
+            <RadzenListBox @bind-Value=@caixasSelecionadas Data=@caixas TextProperty="Nome"
+                           FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                           Multiple=true AllowClear=true Placeholder="Caixas" Style="width: 100%"/>
+            <RadzenListBox @bind-Value=@solucoesSelecionadas Data=@solucoes TextProperty="Nome"
+                           FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                           Multiple=true AllowClear=true Placeholder="Algoritmos" Style="width: 100%"/>
+    
+        </RadzenSplitterPane>
+        <RadzenSplitterPane>
+                <RadzenRow>
+                    <RadzenRadioButtonList @bind-Value=@visao TValue="int">
+                        <Items>
+                            <RadzenRadioButtonListItem Text="Organizar" Value="1"/>
+                            <RadzenRadioButtonListItem Text="Organizadas" Value="2"/>
+                        </Items>
+                    </RadzenRadioButtonList>
+                </RadzenRow>
+                <RadzenRow Visible=@(visao == 1)>
+                    <RadzenButton Click=@(OrganizarSelecionados)>Organizar Selecionados</RadzenButton>
+                    <RadzenButton Click=@(SelecionarPrateleira) Disabled=@(visaoSelecionar?.Prateleira is null)>Usar Organização</RadzenButton>
+                </RadzenRow>
+                <RadzenRow Visible=@(visao == 2)>
+                    <RadzenButton Click=@Salvar>Gravar</RadzenButton>
+                </RadzenRow>
+                <RadzenRow>
+                    <VisaoPrateleira @ref="visaoSelecionar" Prateleiras=@(visao == 1 ? prateleirasParaSelecionar : organizador.PrateleirasOrganizadas())></VisaoPrateleira>
+                </RadzenRow>
+            </RadzenSplitterPane>
+
+    </RadzenSplitter>
+
+    
 </RadzenRow>
 @code {
     private readonly List<Caixa> caixas = new List<Caixa>();
@@ -104,7 +111,7 @@
                 foreach (var p in r.Prateleiras)
                 {
                     var perc = (1 - (p.VolumeNaoUtilizado / p.Volume));
-                    var nova = $"{perc:P2} - {r.Descricao} - {p.Nome}";
+                    var nova = $"{perc:P2} - {p.Nome} - {r.Descricao}";
 
                     descricoes[nova] = p.Nome;
                     p.Nome = nova;
