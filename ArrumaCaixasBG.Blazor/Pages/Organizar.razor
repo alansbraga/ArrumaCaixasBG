@@ -1,6 +1,5 @@
 @page "/Organizar"
 @using ArrumaCaixasBG.DadosCSV
-@using System.Net.Http.Headers
 @using System.Text
 @using BlazorDownloadFile
 @inject IOrganizacaoInterativa organizador
@@ -29,25 +28,25 @@
     
         </RadzenSplitterPane>
         <RadzenSplitterPane>
-                <RadzenRow>
-                    <RadzenRadioButtonList @bind-Value=@visao TValue="int">
-                        <Items>
-                            <RadzenRadioButtonListItem Text="Organizar" Value="1"/>
-                            <RadzenRadioButtonListItem Text="Organizadas" Value="2"/>
-                        </Items>
-                    </RadzenRadioButtonList>
-                </RadzenRow>
-                <RadzenRow Visible=@(visao == 1)>
-                    <RadzenButton Click=@(OrganizarSelecionados)>Organizar Selecionados</RadzenButton>
-                    <RadzenButton Click=@(SelecionarPrateleira) Disabled=@(visaoSelecionar?.Prateleira is null)>Usar Organização</RadzenButton>
-                </RadzenRow>
-                <RadzenRow Visible=@(visao == 2)>
-                    <RadzenButton Click=@Salvar>Gravar</RadzenButton>
-                </RadzenRow>
-                <RadzenRow>
-                    <VisaoPrateleira @ref="visaoSelecionar" Prateleiras=@(visao == 1 ? prateleirasParaSelecionar : organizador.PrateleirasOrganizadas())></VisaoPrateleira>
-                </RadzenRow>
-            </RadzenSplitterPane>
+            <RadzenRow>
+                <RadzenRadioButtonList @bind-Value=@visao TValue="int">
+                    <Items>
+                        <RadzenRadioButtonListItem Text="Organizar" Value="1"/>
+                        <RadzenRadioButtonListItem Text="Organizadas" Value="2"/>
+                    </Items>
+                </RadzenRadioButtonList>
+            </RadzenRow>
+            <RadzenRow Visible=@(visao == 1)>
+                <RadzenButton Click=@(OrganizarSelecionados)>Organizar Selecionados</RadzenButton>
+                <RadzenButton Click=@(SelecionarPrateleira) Disabled=@(visaoSelecionar?.Prateleira is null)>Usar Organização</RadzenButton>
+            </RadzenRow>
+            <RadzenRow Visible=@(visao == 2)>
+                <RadzenButton Click=@Salvar>Gravar</RadzenButton>
+            </RadzenRow>
+            <RadzenRow>
+                <VisaoPrateleira @ref="visaoSelecionar" Prateleiras=@(visao == 1 ? prateleirasParaSelecionar : organizador.PrateleirasOrganizadas()) ></VisaoPrateleira>
+            </RadzenRow>
+        </RadzenSplitterPane>
 
     </RadzenSplitter>
 
@@ -73,7 +72,7 @@
     private void ArrumarTela()
     {
         caixas.Clear();
-        caixas.AddRange(organizador.CaixasDisponiveis());
+        caixas.AddRange(organizador.CaixasDisponiveis().OrderBy(c => c.Nome));
         caixasSelecionadas.Clear();
         caixasSelecionadas.AddRange(caixas);
         prateleiras.Clear();

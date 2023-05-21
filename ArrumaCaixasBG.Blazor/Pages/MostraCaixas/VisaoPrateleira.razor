@@ -32,7 +32,7 @@
     public IEnumerable<Prateleira> Prateleiras
     {
         get => prateleiras.ToArray();
-        set 
+        set
         {
             prateleiras.Clear();
             prateleiras.AddRange(value);
@@ -89,13 +89,13 @@
                 Prateleira = selecionada.Prateleira;
             ds.Close(true);
         }
-        
+
         var result = await DialogService.OpenAsync("Procurar Caixa", ds =>
             @<RadzenStack Gap="1.5rem">
                 <BuscaCaixa Prateleiras="prateleiras" @bind-Selecionado="selecionada"></BuscaCaixa>
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
-                            <RadzenButton Text="Selecionar" Click="() => Selecionou(ds)" Style="width: 200px;"/>
+                        <RadzenButton Text="Selecionar" Click="() => Selecionou(ds)" Style="width: 200px;"/>
                     </RadzenStack>
                 </RadzenStack>
             </RadzenStack>);

@@ -5,15 +5,17 @@
 
 <RadzenRow>
     <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenLabel Style="font-size: large">Prateleiras</RadzenLabel>
         <RadzenLabel> Selecione o arquivo com as praterleiras</RadzenLabel>
         <RadzenLabel>Colunas necessárias: Nome, Altura, Largura , Profundidade, Ordem</RadzenLabel>
         <RadzenRow>
-            <InputFile OnChange="@SubiuPrateleiras" />
+            <InputFile OnChange="@SubiuPrateleiras"/>
         </RadzenRow>
     </RadzenStack>
 </RadzenRow>
 <RadzenRow Style="padding-top: 2em;">
     <RadzenStack>
+        <RadzenLabel Style="font-size: large">Caixas</RadzenLabel>
         <RadzenLabel>Selecione o arquivo com as caixas</RadzenLabel>
         <RadzenLabel>Colunas necessárias: Nome, Comprimento, Largura, Altura, Peso</RadzenLabel>
         <RadzenRow >
